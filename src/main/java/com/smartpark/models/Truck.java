@@ -1,4 +1,6 @@
-package com.smartpark;
+package com.smartpark.models;
+
+import com.smartpark.interfaces.Payable;
 
 public class Truck extends Vehicle implements Payable {
 

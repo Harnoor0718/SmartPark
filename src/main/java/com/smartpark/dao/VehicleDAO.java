@@ -1,7 +1,10 @@
-package com.smartpark;
+package com.smartpark.dao;
 
+import com.smartpark.models.Vehicle;
 import java.util.ArrayList;
 import java.util.List;
+
+
 
 public class VehicleDAO {
 

@@ -1,4 +1,4 @@
-package com.smartpark;
+package com.smartpark.models;
 
 public abstract class Vehicle {
 

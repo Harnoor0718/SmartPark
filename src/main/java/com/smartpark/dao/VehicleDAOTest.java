@@ -1,4 +1,8 @@
-package com.smartpark;
+package com.smartpark.dao;
+
+import com.smartpark.models.Car;
+import com.smartpark.models.Bike;
+import com.smartpark.models.Truck;
 
 public class VehicleDAOTest {
 

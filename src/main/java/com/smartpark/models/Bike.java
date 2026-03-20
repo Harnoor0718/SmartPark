@@ -1,19 +1,21 @@
-package com.smartpark;
+package com.smartpark.models;
 
-public class Car extends Vehicle implements Payable {
+import com.smartpark.interfaces.Payable;
 
-    public Car(String vehicleId, String licensePlate, String ownerId) {
+public class Bike extends Vehicle implements Payable {
+
+    public Bike(String vehicleId, String licensePlate, String ownerId) {
         super(vehicleId, licensePlate, ownerId);
     }
 
     @Override
     public String getVehicleType() {
-        return "Car";
+        return "Bike";
     }
 
     @Override
     public double getParkingRate() {
-        return 20.0; // Rs 20 per hour
+        return 10.0; // Rs 10 per hour
     }
 
     @Override
