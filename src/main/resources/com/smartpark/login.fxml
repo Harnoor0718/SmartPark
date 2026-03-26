@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.smartpark.LoginController"
+            prefWidth="800" prefHeight="600">
+
+    <VBox alignment="CENTER" spacing="15"
+          AnchorPane.topAnchor="150"
+          AnchorPane.leftAnchor="250"
+          AnchorPane.rightAnchor="250">
+
+        <Label text="SmartPark" style="-fx-font-size:28px; -fx-font-weight:bold; -fx-text-fill:#1a73e8;"/>
+        <Label text="Login to your account" style="-fx-text-fill:#666;"/>
+
+        <TextField fx:id="usernameField" promptText="Username"
+                   style="-fx-padding:12; -fx-font-size:14px;"/>
+
+        <PasswordField fx:id="passwordField" promptText="Password"
+                       style="-fx-padding:12; -fx-font-size:14px;"/>
+
+        <Button fx:id="loginBtn" text="Login" onAction="#handleLogin"
+                maxWidth="Infinity"
+                style="-fx-background-color:#1a73e8; -fx-text-fill:white; -fx-font-size:14px; -fx-padding:12;"/>
+
+        <Label fx:id="errorLabel" visible="false"
+               style="-fx-text-fill:red; -fx-font-size:13px;"/>
+
+    </VBox>
+</AnchorPane>
