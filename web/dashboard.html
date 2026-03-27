@@ -1,87 +1,87 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SmartPark – Dashboard</title>
-    <link rel="stylesheet" href="css/style.css">
-    <style>
-        nav {
-            background: #1a73e8;
-            color: white;
-            padding: 12px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        nav span {
-            font-size: 20px;
-            font-weight: bold;
-        }
-
-        nav button {
-            width: auto;
-            padding: 8px 16px;
-            background: transparent;
-            border: 1px solid white;
-        }
-
-        .page-title {
-            padding: 20px;
-            font-size: 20px;
-            font-weight: bold;
-        }
-
-        .slot-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-            gap: 12px;
-            padding: 0 20px 20px;
-        }
-
-        .slot-card {
-            background: #4caf50;
-            color: white;
-            border-radius: 8px;
-            padding: 20px;
-            text-align: center;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
-        .slot-card.occupied {
-            background: #f44336;
-            cursor: not-allowed;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SmartPark | Dashboard</title>
+  <link rel="stylesheet" href="css/style.css">
 </head>
-<body style="display:block; padding:0;">
+<body>
+  <nav>
+    <span>🅿️ SmartPark</span>
+    <div>
+      <span id="nav-username"></span>
+      <button onclick="logout()" class="logout-btn">Logout</button>
+    </div>
+  </nav>
 
-    <nav>
-        <span>SmartPark</span>
-        <button onclick="logout()">Logout</button>
-    </nav>
-
-    <p class="page-title">Parking Slots</p>
-
-    <div class="slot-grid">
-        <div class="slot-card">A1</div>
-        <div class="slot-card">A2</div>
-        <div class="slot-card occupied">A3</div>
-        <div class="slot-card">A4</div>
-        <div class="slot-card occupied">A5</div>
-        <div class="slot-card">A6</div>
-        <div class="slot-card">A7</div>
-        <div class="slot-card occupied">A8</div>
+  <div class="dashboard-container">
+    <div class="welcome-card">
+      <h2>Welcome, <span id="welcome-name"></span>! 👋</h2>
+      <p>Role: <span id="user-role"></span></p>
     </div>
 
-    <script>
-        function logout() {
-            // TODO: clear token and redirect
-            window.location.href = 'login.html';
-        }
-    </script>
+    <div class="stats-grid">
+      <div class="stat-card">
+        <h3>🚗 Total Slots</h3>
+        <p class="stat-number">20</p>
+      </div>
+      <div class="stat-card">
+        <h3>✅ Available</h3>
+        <p class="stat-number" id="available-slots">20</p>
+      </div>
+      <div class="stat-card">
+        <h3>❌ Occupied</h3>
+        <p class="stat-number" id="occupied-slots">0</p>
+      </div>
+      <div class="stat-card">
+        <h3>📍 Location</h3>
+        <p class="stat-number" style="font-size:16px;">SmartPark Central</p>
+      </div>
+    </div>
 
+    <div class="slots-section">
+      <h3>Parking Slots</h3>
+      <div class="slots-grid" id="slots-grid">
+        <p>Loading slots...</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Check if logged in
+    const username = localStorage.getItem('username');
+    const role = localStorage.getItem('role');
+    if (!username) window.location.href = 'login.html';
+
+    document.getElementById('nav-username').innerText = username;
+    document.getElementById('welcome-name').innerText = username;
+    document.getElementById('user-role').innerText = role.toUpperCase();
+
+    // Render sample slots (since slot API comes in Week 2)
+    const slots = [
+      {id:'A1',type:'CAR'},{id:'A2',type:'CAR'},{id:'A3',type:'CAR'},
+      {id:'A4',type:'CAR'},{id:'A5',type:'CAR'},{id:'A6',type:'CAR'},
+      {id:'A7',type:'CAR'},{id:'A8',type:'CAR'},{id:'A9',type:'CAR'},
+      {id:'A10',type:'CAR'},{id:'B1',type:'BIKE'},{id:'B2',type:'BIKE'},
+      {id:'B3',type:'BIKE'},{id:'B4',type:'BIKE'},{id:'B5',type:'BIKE'},
+      {id:'B6',type:'BIKE'},{id:'B7',type:'BIKE'},{id:'T1',type:'TRUCK'},
+      {id:'T2',type:'TRUCK'},{id:'T3',type:'TRUCK'}
+    ];
+
+    const grid = document.getElementById('slots-grid');
+    grid.innerHTML = '';
+    slots.forEach(slot => {
+      const div = document.createElement('div');
+      div.className = 'slot-card available';
+      div.innerHTML = `<strong>${slot.id}</strong><br><small>${slot.type}</small>`;
+      grid.appendChild(div);
+    });
+
+    function logout() {
+      localStorage.clear();
+      window.location.href = 'login.html';
+    }
+  </script>
 </body>
 </html>

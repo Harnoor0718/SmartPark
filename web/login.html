@@ -1,47 +1,51 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SmartPark – Login</title>
-    <link rel="stylesheet" href="css/style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SmartPark | Login</title>
+  <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
+  <div class="container">
     <div class="card">
-        <h1>SmartPark</h1>
-        <p class="subtitle">Login to your account</p>
-
-        <div class="form-group">
-            <input type="text" id="username" placeholder="Username">
-        </div>
-
-        <div class="form-group">
-            <input type="password" id="password" placeholder="Password">
-        </div>
-
-        <button onclick="handleLogin()">Login</button>
-
-        <p id="error-msg" class="error hidden"></p>
-
-        <p style="text-align:center;">
-            Don't have an account? <a href="register.html">Register</a>
-        </p>
+      <h1>🅿️ SmartPark</h1>
+      <h2>Login</h2>
+      <div id="error-msg" class="error-box" style="display:none;"></div>
+      <input type="email" id="email" placeholder="Email" />
+      <input type="password" id="password" placeholder="Password" />
+      <button onclick="login()">Login</button>
+      <p>Don't have an account? <a href="register.html">Register</a></p>
     </div>
+  </div>
+  <script>
+    async function login() {
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+      const errorBox = document.getElementById('error-msg');
+      errorBox.style.display = 'none';
 
-    <script>
-        function handleLogin() {
-            const username = document.getElementById('username').value;
-            const password = document.getElementById('password').value;
-
-            if (!username || !password) {
-                const err = document.getElementById('error-msg');
-                err.textContent = 'Please fill in all fields';
-                err.classList.remove('hidden');
-                return;
-            }
-            // TODO Day 5: connect to /api/auth/login
-            console.log('Login clicked:', username);
+      try {
+        const res = await fetch('http://localhost:8080/api/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password })
+        });
+        const data = await res.json();
+        if (data.status === 'success') {
+          localStorage.setItem('userId', data.userId);
+          localStorage.setItem('username', data.username);
+          localStorage.setItem('role', data.role);
+          window.location.href = 'dashboard.html';
+        } else {
+          errorBox.style.display = 'block';
+          errorBox.innerText = data.message;
         }
-    </script>
+      } catch (err) {
+        errorBox.style.display = 'block';
+        errorBox.innerText = 'Could not connect to server. Make sure Spring Boot is running.';
+      }
+    }
+  </script>
 </body>
 </html>
