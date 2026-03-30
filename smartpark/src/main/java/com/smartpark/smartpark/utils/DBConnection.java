@@ -6,7 +6,7 @@ import java.sql.SQLException;
 
 public class DBConnection {
 
-    private static final String URL = "jdbc:mysql://localhost:3306/smartpark_db";
+    private static final String URL = "jdbc:mysql://localhost:3306/smartpark_db?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true";
     private static final String USERNAME = "root";
     private static final String PASSWORD = "Harnoor@123";
 
@@ -14,7 +14,7 @@ public class DBConnection {
 
     public static Connection getConnection() {
         try {
-            if (connection == null || connection.isClosed()) {
+            if (connection == null || connection.isClosed() || !connection.isValid(2)) {
                 connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
                 System.out.println("Database connected successfully!");
             }
