@@ -71,4 +71,14 @@ public class SlotDAO extends BaseDAO {
         slot.setLocationId(rs.getInt("location_id"));
         return slot;
     }
+
+    private ParkingSlot mapRow(ResultSet rs) throws SQLException {
+        ParkingSlot slot = new ParkingSlot();
+        slot.setId(rs.getInt("id"));
+        slot.setSlotNumber(rs.getString("slot_number"));
+        slot.setSlotType(ParkingSlot.SlotType.valueOf(rs.getString("slot_type")));
+        slot.setOccupied(rs.getBoolean("is_occupied"));
+        slot.setLocationId(rs.getInt("location_id"));
+        return slot;
+    }
 }
