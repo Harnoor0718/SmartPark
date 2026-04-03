@@ -9,7 +9,6 @@ import java.util.List;
 
 public class SlotDAO {
 
-    // Get all parking slots
     public List<ParkingSlot> findAll() {
         List<ParkingSlot> slots = new ArrayList<>();
         String sql = "SELECT * FROM parking_slots";
@@ -17,22 +16,13 @@ public class SlotDAO {
             Connection conn = DBConnection.getConnection();
             PreparedStatement ps = conn.prepareStatement(sql);
             ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                ParkingSlot slot = new ParkingSlot();
-                slot.setId(rs.getInt("id"));
-                slot.setSlotNumber(rs.getString("slot_number"));
-                slot.setSlotType(ParkingSlot.SlotType.valueOf(rs.getString("slot_type")));
-                slot.setOccupied(rs.getBoolean("is_occupied"));
-                slot.setLocationId(rs.getInt("location_id"));
-                slots.add(slot);
-            }
+            while (rs.next()) slots.add(mapRow(rs));
         } catch (SQLException e) {
             System.out.println("Error fetching slots: " + e.getMessage());
         }
         return slots;
     }
 
-    // Get only available slots
     public List<ParkingSlot> findAvailable() {
         List<ParkingSlot> slots = new ArrayList<>();
         String sql = "SELECT * FROM parking_slots WHERE is_occupied = false";
@@ -40,22 +30,13 @@ public class SlotDAO {
             Connection conn = DBConnection.getConnection();
             PreparedStatement ps = conn.prepareStatement(sql);
             ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                ParkingSlot slot = new ParkingSlot();
-                slot.setId(rs.getInt("id"));
-                slot.setSlotNumber(rs.getString("slot_number"));
-                slot.setSlotType(ParkingSlot.SlotType.valueOf(rs.getString("slot_type")));
-                slot.setOccupied(rs.getBoolean("is_occupied"));
-                slot.setLocationId(rs.getInt("location_id"));
-                slots.add(slot);
-            }
+            while (rs.next()) slots.add(mapRow(rs));
         } catch (SQLException e) {
             System.out.println("Error fetching available slots: " + e.getMessage());
         }
         return slots;
     }
 
-    // Find slot by ID
     public ParkingSlot findById(int id) {
         String sql = "SELECT * FROM parking_slots WHERE id = ?";
         try {
@@ -63,22 +44,13 @@ public class SlotDAO {
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setInt(1, id);
             ResultSet rs = ps.executeQuery();
-            if (rs.next()) {
-                ParkingSlot slot = new ParkingSlot();
-                slot.setId(rs.getInt("id"));
-                slot.setSlotNumber(rs.getString("slot_number"));
-                slot.setSlotType(ParkingSlot.SlotType.valueOf(rs.getString("slot_type")));
-                slot.setOccupied(rs.getBoolean("is_occupied"));
-                slot.setLocationId(rs.getInt("location_id"));
-                return slot;
-            }
+            if (rs.next()) return mapRow(rs);
         } catch (SQLException e) {
             System.out.println("Error fetching slot: " + e.getMessage());
         }
         return null;
     }
 
-    // Update slot occupied status
     public boolean updateOccupied(int slotId, boolean isOccupied) {
         String sql = "UPDATE parking_slots SET is_occupied = ? WHERE id = ?";
         try {
@@ -94,7 +66,6 @@ public class SlotDAO {
         }
     }
 
-    // Save a new slot
     public boolean save(ParkingSlot slot) {
         String sql = "INSERT INTO parking_slots (slot_number, slot_type, is_occupied, location_id) VALUES (?, ?, ?, ?)";
         try {
@@ -110,5 +81,15 @@ public class SlotDAO {
             System.out.println("Error saving slot: " + e.getMessage());
             return false;
         }
+    }
+
+    private ParkingSlot mapRow(ResultSet rs) throws SQLException {
+        ParkingSlot slot = new ParkingSlot();
+        slot.setId(rs.getInt("id"));
+        slot.setSlotNumber(rs.getString("slot_number"));
+        slot.setSlotType(ParkingSlot.SlotType.valueOf(rs.getString("slot_type")));
+        slot.setOccupied(rs.getBoolean("is_occupied"));
+        slot.setLocationId(rs.getInt("location_id"));
+        return slot;
     }
 }
