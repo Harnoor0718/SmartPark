@@ -1,4 +1,4 @@
-package com.smartpark.dao;
+﻿package com.smartpark.dao;
 
 import com.smartpark.models.Car;
 import com.smartpark.models.Bike;
@@ -29,6 +29,6 @@ public class VehicleDAOTest {
         System.out.println("\n=== Testing findByLicensePlate() ===");
         dao.findByLicensePlate("DL1234");
 
-        System.out.println("\nVehicleDAO test complete! ✅");
+        System.out.println("\nVehicleDAO test complete! âœ…");
     }
 }
