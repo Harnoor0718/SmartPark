@@ -1,9 +1,15 @@
 package com.smartpark;
 
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.FlowPane;
-import javafx.scene.paint.Color;
+import javafx.stage.Stage;
+import javafx.util.Duration;
 import java.net.URI;
 import java.net.URL;
 import java.net.http.*;
@@ -13,11 +19,28 @@ public class DashboardController extends BaseController implements Refreshable {
 
     @FXML private Label userLabel;
     @FXML private FlowPane slotGrid;
+    @FXML private Label lastUpdatedLabel;
+
+    private Timeline autoRefresh;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         userLabel.setText("Welcome, " + Session.getInstance().getUsername() + "!");
         loadSlots();
+        startAutoRefresh();
+    }
+
+    // ── Day 15: Auto-refresh every 5 seconds ──
+    private void startAutoRefresh() {
+        autoRefresh = new Timeline(
+            new KeyFrame(Duration.seconds(5), e -> loadSlots())
+        );
+        autoRefresh.setCycleCount(Timeline.INDEFINITE);
+        autoRefresh.play();
+    }
+
+    private void stopAutoRefresh() {
+        if (autoRefresh != null) autoRefresh.stop();
     }
 
     private void loadSlots() {
@@ -36,48 +59,78 @@ public class DashboardController extends BaseController implements Refreshable {
             }
         };
 
-        task.setOnSucceeded(e -> {
-            // Parse and display slots
-            slotGrid.getChildren().clear();
-            String body = task.getValue();
-            // Simple mock display until JSON parsing added
-            for (int i = 1; i <= 8; i++) {
-                Button slotBtn = new Button("A" + i);
-                slotBtn.setPrefSize(80, 80);
-                slotBtn.setStyle(
-                    "-fx-background-color: #4caf50; -fx-text-fill: white; " +
-                    "-fx-font-weight: bold; -fx-font-size: 14px; -fx-background-radius: 8;"
-                );
-                slotGrid.getChildren().add(slotBtn);
-            }
-        });
-
-        task.setOnFailed(e -> {
-            // Show mock data if API not reachable
-            for (int i = 1; i <= 8; i++) {
-                Button slotBtn = new Button("A" + i);
-                slotBtn.setPrefSize(80, 80);
-                boolean occupied = (i % 3 == 0);
-                slotBtn.setStyle(
-                    "-fx-background-color: " + (occupied ? "#f44336" : "#4caf50") + 
-                    "; -fx-text-fill: white; -fx-font-weight: bold; " +
-                    "-fx-font-size: 14px; -fx-background-radius: 8;"
-                );
-                slotGrid.getChildren().add(slotBtn);
-            }
-        });
+        task.setOnSucceeded(e -> renderSlots());
+        task.setOnFailed(e -> renderSlots());
 
         new Thread(task).start();
     }
 
-    @Override
-    public void refresh() {
-        loadSlots();
+    private void renderSlots() {
+        slotGrid.getChildren().clear();
+        String[] slotNames = {"A1","A2","A3","A4","A5","A6","A7","A8"};
+        boolean[] occupied = {false, false, true, false, true, false, false, true};
+
+        for (int i = 0; i < slotNames.length; i++) {
+            Button slotBtn = new Button(slotNames[i]);
+            slotBtn.setPrefSize(90, 90);
+            boolean isOccupied = occupied[i];
+            slotBtn.setStyle(
+                "-fx-background-color:" + (isOccupied ? "#f44336" : "#4caf50") +
+                "; -fx-text-fill:white; -fx-font-weight:bold;" +
+                "-fx-font-size:14px; -fx-background-radius:8;"
+            );
+
+            if (!isOccupied) {
+                final String slotName = slotNames[i];
+                slotBtn.setOnAction(e -> goToBooking(slotName));
+            } else {
+                slotBtn.setDisable(true);
+            }
+
+            slotGrid.getChildren().add(slotBtn);
+        }
+
+        // Update last refreshed time
+        if (lastUpdatedLabel != null) {
+            java.time.LocalTime now = java.time.LocalTime.now();
+            lastUpdatedLabel.setText("Last updated: " +
+                String.format("%02d:%02d:%02d",
+                    now.getHour(), now.getMinute(), now.getSecond())
+            );
+        }
     }
+
+    private void goToBooking(String slotName) {
+        stopAutoRefresh();
+        try {
+            Parent root = FXMLLoader.load(
+                getClass().getResource("/com/smartpark/booking.fxml")
+            );
+            Stage stage = (Stage) slotGrid.getScene().getWindow();
+            stage.setScene(new Scene(root, 900, 600));
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    @Override
+    public void refresh() { loadSlots(); }
+
+    @FXML
+    private void handleRefresh() { loadSlots(); }
 
     @FXML
     private void handleLogout() {
+        stopAutoRefresh();
         Session.getInstance().setToken(null);
-        System.out.println("Logged out");
+        try {
+            Parent root = FXMLLoader.load(
+                getClass().getResource("/com/smartpark/login.fxml")
+            );
+            Stage stage = (Stage) slotGrid.getScene().getWindow();
+            stage.setScene(new Scene(root, 800, 600));
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 }
