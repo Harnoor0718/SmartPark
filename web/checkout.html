@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartPark – Confirmation</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .success-icon {
+            text-align: center;
+            font-size: 48px;
+        }
+
+        .booking-details {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 15px;
+        }
+
+        .detail-row span:last-child {
+            font-weight: bold;
+            color: #1a73e8;
+        }
+
+        .status-badge {
+            text-align: center;
+            padding: 8px;
+            border-radius: 6px;
+            font-weight: bold;
+            margin-top: 8px;
+        }
+
+        .checked-in {
+            background: #e8f5e9;
+            color: #4caf50;
+        }
+
+        .checked-out {
+            background: #e3f2fd;
+            color: #1a73e8;
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <div class="success-icon">✅</div>
+        <h1 style="color:#4caf50; font-size:22px;">Booking Confirmed!</h1>
+
+        <div class="booking-details">
+            <div class="detail-row">
+                <span>Booking ID</span>
+                <span id="bookingId">BK001</span>
+            </div>
+            <div class="detail-row">
+                <span>Slot</span>
+                <span>A1</span>
+            </div>
+            <div class="detail-row">
+                <span>Vehicle</span>
+                <span id="vehiclePlate">-</span>
+            </div>
+            <div class="detail-row">
+                <span>Type</span>
+                <span id="vehicleType">-</span>
+            </div>
+            <div class="detail-row">
+                <span>Amount</span>
+                <span>₹50</span>
+            </div>
+        </div>
+
+        <div id="statusBadge" class="status-badge checked-in">
+            Status: Booked
+        </div>
+
+        <button onclick="handleCheckin()">Check In</button>
+        <button onclick="handleCheckout()"
+                id="checkoutBtn"
+                style="background:#f44336; margin-top:0;"
+                disabled>Check Out</button>
+
+        <p id="billMsg" class="hidden"
+           style="text-align:center; font-weight:bold;
+                  color:#1a73e8; font-size:16px;">
+            Total Bill: ₹50
+        </p>
+
+        <a href="dashboard.html"
+           style="text-align:center; display:block; margin-top:8px;">
+            ← Back to Dashboard
+        </a>
+    </div>
+
+    <script>
+        // Load booking details
+        document.getElementById('bookingId').textContent =
+            localStorage.getItem('bookingId') || 'BK001';
+        document.getElementById('vehiclePlate').textContent =
+            localStorage.getItem('vehiclePlate') || '-';
+        document.getElementById('vehicleType').textContent =
+            localStorage.getItem('vehicleType') || '-';
+
+        function handleCheckin() {
+            const badge = document.getElementById('statusBadge');
+            badge.textContent = '✅ Checked In';
+            badge.className = 'status-badge checked-in';
+            document.getElementById('checkoutBtn').disabled = false;
+            document.querySelector('button').disabled = true;
+        }
+
+        function handleCheckout() {
+            const badge = document.getElementById('statusBadge');
+            badge.textContent = '🔵 Checked Out';
+            badge.className = 'status-badge checked-out';
+            document.getElementById('billMsg').classList.remove('hidden');
+            document.getElementById('checkoutBtn').disabled = true;
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.smartpark.CheckinController"
+            prefWidth="900" prefHeight="600">
+
+    <VBox spacing="20"
+          AnchorPane.topAnchor="60"
+          AnchorPane.leftAnchor="250"
+          AnchorPane.rightAnchor="250">
+
+        <Label text="Check In / Check Out"
+               style="-fx-font-size:24px; -fx-font-weight:bold; -fx-text-fill:#1a73e8;"/>
+
+        <Label text="Enter your Booking ID:"/>
+
+        <TextField fx:id="bookingIdField"
+                   promptText="e.g. BK001"
+                   style="-fx-padding:12; -fx-font-size:14px;"/>
+
+        <Label fx:id="slotInfoLabel"
+               style="-fx-font-size:14px; -fx-text-fill:#666;"/>
+
+        <Label fx:id="statusLabel"
+               style="-fx-font-size:16px;"/>
+
+        <HBox spacing="12">
+            <Button fx:id="checkinBtn"
+                    text="Check In"
+                    onAction="#handleCheckin"
+                    prefWidth="180"
+                    style="-fx-background-color:#4caf50; -fx-text-fill:white;
+                           -fx-font-size:14px; -fx-padding:12;"/>
+
+            <Button fx:id="checkoutBtn"
+                    text="Check Out"
+                    onAction="#handleCheckout"
+                    prefWidth="180"
+                    disable="true"
+                    style="-fx-background-color:#f44336; -fx-text-fill:white;
+                           -fx-font-size:14px; -fx-padding:12;"/>
+        </HBox>
+
+        <Label fx:id="billLabel"
+               style="-fx-font-size:18px; -fx-font-weight:bold; -fx-text-fill:#1a73e8;"/>
+
+        <Label fx:id="errorLabel" visible="false"
+               style="-fx-text-fill:red; -fx-font-size:13px;"/>
+
+        <Button text="← Back to Dashboard"
+                onAction="#goToDashboard"
+                maxWidth="Infinity"
+                style="-fx-background-color:#eee; -fx-text-fill:#333;
+                       -fx-font-size:14px; -fx-padding:12;"/>
+
+    </VBox>
+</AnchorPane>

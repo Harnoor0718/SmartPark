@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.smartpark.ConfirmationController"
+            prefWidth="900" prefHeight="600">
+
+    <VBox spacing="20"
+          AnchorPane.topAnchor="80"
+          AnchorPane.leftAnchor="250"
+          AnchorPane.rightAnchor="250">
+
+        <Label text="✅ Booking Confirmed!"
+               style="-fx-font-size:26px; -fx-font-weight:bold; -fx-text-fill:#4caf50;"/>
+
+        <Label text="Your booking details:"
+               style="-fx-font-size:14px; -fx-text-fill:#666;"/>
+
+        <VBox spacing="12"
+              style="-fx-background-color:white; -fx-padding:20;
+                     -fx-border-radius:8; -fx-background-radius:8;
+                     -fx-effect:dropshadow(gaussian,rgba(0,0,0,0.1),10,0,0,2);">
+
+            <Label fx:id="bookingIdLabel"
+                   style="-fx-font-size:15px; -fx-font-weight:bold;"/>
+            <Label fx:id="slotLabel"
+                   style="-fx-font-size:15px;"/>
+            <Label fx:id="vehicleLabel"
+                   style="-fx-font-size:15px;"/>
+            <Label fx:id="amountLabel"
+                   style="-fx-font-size:15px; -fx-text-fill:#1a73e8; -fx-font-weight:bold;"/>
+        </VBox>
+
+        <Button fx:id="checkinBtn"
+                text="Proceed to Check-In"
+                onAction="#goToCheckin"
+                maxWidth="Infinity"
+                style="-fx-background-color:#1a73e8; -fx-text-fill:white;
+                       -fx-font-size:14px; -fx-padding:12;"/>
+
+        <Button text="Back to Dashboard"
+                onAction="#goToDashboard"
+                maxWidth="Infinity"
+                style="-fx-background-color:#eee; -fx-text-fill:#333;
+                       -fx-font-size:14px; -fx-padding:12;"/>
+
+    </VBox>
+</AnchorPane>

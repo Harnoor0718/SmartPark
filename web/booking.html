@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartPark – Book a Slot</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .slot-preview {
+            background: #e8f5e9;
+            border: 2px solid #4caf50;
+            border-radius: 8px;
+            padding: 16px;
+            text-align: center;
+            font-weight: bold;
+            color: #4caf50;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1>SmartPark</h1>
+        <p class="subtitle">Book a Parking Slot</p>
+
+        <div class="slot-preview" id="slotPreview">
+            🅿️ Slot A1 — Available
+        </div>
+
+        <div class="form-group">
+            <label>Vehicle Type</label>
+            <select id="vehicleType" style="width:100%; padding:14px;
+                    border:1.5px solid #ddd; border-radius:8px; font-size:16px;">
+                <option>Car</option>
+                <option>Bike</option>
+                <option>Truck</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <input type="text" id="vehiclePlate"
+                   placeholder="Vehicle Plate e.g. PB-01-AB-1234">
+        </div>
+
+        <button onclick="handleBooking()">Confirm Booking</button>
+
+        <p id="error-msg" class="error hidden"></p>
+
+        <a href="dashboard.html" style="text-align:center; display:block;">
+            ← Back to Dashboard
+        </a>
+    </div>
+
+    <script>
+        function handleBooking() {
+            const plate = document.getElementById('vehiclePlate').value.trim();
+            const type = document.getElementById('vehicleType').value;
+
+            if (!plate) {
+                const err = document.getElementById('error-msg');
+                err.textContent = 'Please enter vehicle plate number';
+                err.classList.remove('hidden');
+                return;
+            }
+
+            // Store booking details
+            localStorage.setItem('bookingId', 'BK001');
+            localStorage.setItem('vehiclePlate', plate);
+            localStorage.setItem('vehicleType', type);
+
+            // Go to checkout page
+            window.location.href = 'checkout.html';
+        }
+    </script>
+</body>
+</html>
