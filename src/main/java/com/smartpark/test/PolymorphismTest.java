@@ -1,4 +1,4 @@
-﻿package com.smartpark.test;
+package com.smartpark.test;
 
 import com.smartpark.models.Bike;
 import com.smartpark.models.Bill;

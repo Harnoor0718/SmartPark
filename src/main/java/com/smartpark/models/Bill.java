@@ -1,4 +1,4 @@
-﻿package com.smartpark.models;
+package com.smartpark.models;
 
 public class Bill {
 

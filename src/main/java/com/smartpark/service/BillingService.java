@@ -1,4 +1,4 @@
-﻿package com.smartpark.service;
+package com.smartpark.service;
 
 import com.smartpark.models.Bill;
 import com.smartpark.models.Vehicle;
