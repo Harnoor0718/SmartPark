@@ -1,7 +1,6 @@
 package com.smartpark.models;
 
 public abstract class Vehicle {
-
     private String vehicleId;
     private String licensePlate;
     private String ownerId;
@@ -17,7 +16,8 @@ public abstract class Vehicle {
     public String getLicensePlate() { return licensePlate; }
     public String getOwnerId() { return ownerId; }
 
-    // Abstract methods â€” each subclass must implement these
+    // Abstract methods - each subclass must implement these
     public abstract String getVehicleType();
     public abstract double getParkingRate();
+    public abstract double calculateBill(double hours);
 }
