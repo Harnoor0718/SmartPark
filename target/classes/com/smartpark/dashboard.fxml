@@ -6,6 +6,7 @@
             fx:controller="com.smartpark.DashboardController"
             prefWidth="900" prefHeight="600">
 
+    <!-- Top nav bar -->
     <top>
         <HBox style="-fx-background-color:#1a73e8; -fx-padding:12;"
               alignment="CENTER_LEFT" spacing="20">
@@ -18,31 +19,16 @@
         </HBox>
     </top>
 
+    <!-- Slot grid placeholder -->
     <center>
-        <VBox spacing="20" style="-fx-padding:30;">
-
-            <HBox spacing="12" alignment="CENTER_LEFT">
-                <Label text="Parking Slots"
-                       style="-fx-font-size:20px; -fx-font-weight:bold;"/>
-                <Button text="🔄 Refresh" onAction="#handleRefresh"
-                        style="-fx-background-color:#e8f0fe; -fx-text-fill:#1a73e8;
-                               -fx-font-size:12px; -fx-padding:6 12;"/>
-            </HBox>
-
-            <!-- Auto-refresh indicator -->
-            <Label fx:id="lastUpdatedLabel"
-                   text="Auto-refreshing every 5 seconds..."
-                   style="-fx-font-size:12px; -fx-text-fill:#999;"/>
-
-            <HBox spacing="16">
-                <Label text="🟢 Available — Click to Book"
-                       style="-fx-font-size:13px; -fx-text-fill:#4caf50;"/>
-                <Label text="🔴 Occupied"
-                       style="-fx-font-size:13px; -fx-text-fill:#f44336;"/>
-            </HBox>
-
-            <FlowPane fx:id="slotGrid" hgap="12" vgap="12"/>
-
+        <VBox alignment="CENTER" spacing="20"
+              style="-fx-padding:30;">
+            <Label text="Parking Slots"
+                   style="-fx-font-size:18px; -fx-font-weight:bold;"/>
+            <FlowPane fx:id="slotGrid" hgap="10" vgap="10" alignment="CENTER">
+                <Label text="Slot data will load here"
+                       style="-fx-text-fill:#999;"/>
+            </FlowPane>
         </VBox>
     </center>
 
