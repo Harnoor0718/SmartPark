@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.smartpark.AdminController"
+            prefWidth="900" prefHeight="600">
+
+    <top>
+        <HBox style="-fx-background-color:#1a73e8; -fx-padding:12;"
+              alignment="CENTER_LEFT" spacing="20">
+            <Label text="SmartPark — Admin Panel"
+                   style="-fx-text-fill:white; -fx-font-size:20px; -fx-font-weight:bold;"/>
+        </HBox>
+    </top>
+
+    <center>
+        <VBox spacing="20" style="-fx-padding:20;">
+
+            <!-- Stats Row -->
+            <HBox spacing="16">
+                <VBox style="-fx-background-color:#e3f2fd; -fx-padding:16;
+                             -fx-background-radius:8;" HBox.hgrow="ALWAYS">
+                    <Label fx:id="totalSlotsLabel"
+                           style="-fx-font-size:15px; -fx-font-weight:bold;
+                                  -fx-text-fill:#1a73e8;"/>
+                </VBox>
+                <VBox style="-fx-background-color:#ffebee; -fx-padding:16;
+                             -fx-background-radius:8;" HBox.hgrow="ALWAYS">
+                    <Label fx:id="occupiedSlotsLabel"
+                           style="-fx-font-size:15px; -fx-font-weight:bold;
+                                  -fx-text-fill:#f44336;"/>
+                </VBox>
+                <VBox style="-fx-background-color:#e8f5e9; -fx-padding:16;
+                             -fx-background-radius:8;" HBox.hgrow="ALWAYS">
+                    <Label fx:id="availableSlotsLabel"
+                           style="-fx-font-size:15px; -fx-font-weight:bold;
+                                  -fx-text-fill:#4caf50;"/>
+                </VBox>
+            </HBox>
+
+            <!-- Slot Table -->
+            <Label text="Slot Management"
+                   style="-fx-font-size:16px; -fx-font-weight:bold;"/>
+
+            <TableView fx:id="slotTable" prefHeight="250">
+                <columns>
+                    <TableColumn fx:id="slotNameCol"
+                                 text="Slot Name" prefWidth="200"/>
+                    <TableColumn fx:id="slotStatusCol"
+                                 text="Status" prefWidth="200"/>
+                </columns>
+            </TableView>
+
+            <!-- Buttons -->
+            <HBox spacing="12">
+                <Button text="🔄 Refresh"
+                        onAction="#handleRefresh"
+                        style="-fx-background-color:#e8f0fe; -fx-text-fill:#1a73e8;
+                               -fx-padding:10 20;"/>
+                <Button text="📊 View Analytics"
+                        onAction="#goToAnalytics"
+                        style="-fx-background-color:#1a73e8; -fx-text-fill:white;
+                               -fx-padding:10 20;"/>
+                <Button fx:id="backBtn"
+                        text="← Back to Dashboard"
+                        onAction="#goBack"
+                        style="-fx-background-color:#eee; -fx-text-fill:#333;
+                               -fx-padding:10 20;"/>
+            </HBox>
+
+        </VBox>
+    </center>
+
+</BorderPane>

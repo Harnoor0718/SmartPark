@@ -3,74 +3,215 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SmartPark – Book a Slot</title>
+    <title>SmartPark – Dashboard</title>
     <link rel="stylesheet" href="css/style.css">
     <style>
-        .slot-preview {
-            background: #e8f5e9;
-            border: 2px solid #4caf50;
+        nav {
+            background: #1a73e8;
+            color: white;
+            padding: 12px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        nav span { font-size: 20px; font-weight: bold; }
+
+        nav button {
+            width: auto;
+            padding: 8px 16px;
+            background: transparent;
+            border: 1px solid white;
+        }
+
+        .page-content { padding: 20px; }
+
+        .page-title {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .last-updated {
+            font-size: 12px;
+            color: #999;
+            margin-bottom: 8px;
+        }
+
+        .refresh-dot {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background: #4caf50;
+            border-radius: 50%;
+            margin-right: 6px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.3; }
+            100% { opacity: 1; }
+        }
+
+        .legend {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 16px;
+            font-size: 13px;
+        }
+
+        .legend span { display: flex; align-items: center; gap: 6px; }
+
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .dot.green { background: #4caf50; }
+        .dot.red { background: #f44336; }
+
+        .slot-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 12px;
+        }
+
+        .slot-card {
+            background: #4caf50;
+            color: white;
             border-radius: 8px;
-            padding: 16px;
+            padding: 20px;
             text-align: center;
             font-weight: bold;
-            color: #4caf50;
-            font-size: 18px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: transform 0.1s;
+            border: none;
+        }
+
+        .slot-card:hover { transform: scale(1.05); }
+
+        .slot-card.occupied {
+            background: #f44336;
+            cursor: not-allowed;
+        }
+
+        .slot-card.occupied:hover { transform: none; }
+
+        /* Responsive breakpoints */
+        @media (max-width: 480px) {
+            .slot-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (min-width: 768px) {
+            .slot-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+
+        @media (min-width: 1200px) {
+            .slot-grid {
+                grid-template-columns: repeat(6, 1fr);
+            }
         }
     </style>
 </head>
-<body>
-    <div class="card">
-        <h1>SmartPark</h1>
-        <p class="subtitle">Book a Parking Slot</p>
+<body style="display:block; padding:0;">
 
-        <div class="slot-preview" id="slotPreview">
-            🅿️ Slot A1 — Available
+    <nav>
+        <span>SmartPark</span>
+        <button onclick="logout()">Logout</button>
+    </nav>
+
+    <div class="page-content">
+        <p class="page-title">Parking Slots</p>
+
+        <!-- Auto-refresh indicator -->
+        <p class="last-updated">
+            <span class="refresh-dot"></span>
+            Auto-refreshing every 5 seconds |
+            Last updated: <span id="lastUpdated">--:--:--</span>
+        </p>
+
+        <!-- Legend -->
+        <div class="legend">
+            <span>
+                <div class="dot green"></div>
+                Available — Click to Book
+            </span>
+            <span>
+                <div class="dot red"></div>
+                Occupied
+            </span>
         </div>
 
-        <div class="form-group">
-            <label>Vehicle Type</label>
-            <select id="vehicleType" style="width:100%; padding:14px;
-                    border:1.5px solid #ddd; border-radius:8px; font-size:16px;">
-                <option>Car</option>
-                <option>Bike</option>
-                <option>Truck</option>
-            </select>
-        </div>
-
-        <div class="form-group">
-            <input type="text" id="vehiclePlate"
-                   placeholder="Vehicle Plate e.g. PB-01-AB-1234">
-        </div>
-
-        <button onclick="handleBooking()">Confirm Booking</button>
-
-        <p id="error-msg" class="error hidden"></p>
-
-        <a href="dashboard.html" style="text-align:center; display:block;">
-            ← Back to Dashboard
-        </a>
+        <!-- Slot grid -->
+        <div class="slot-grid" id="slotGrid"></div>
     </div>
 
     <script>
-        function handleBooking() {
-            const plate = document.getElementById('vehiclePlate').value.trim();
-            const type = document.getElementById('vehicleType').value;
+        // Mock slot data — replace with real API when Harnoor's backend ready
+        const slots = [
+            { id: 1, name: "A1", occupied: false },
+            { id: 2, name: "A2", occupied: false },
+            { id: 3, name: "A3", occupied: true  },
+            { id: 4, name: "A4", occupied: false },
+            { id: 5, name: "A5", occupied: true  },
+            { id: 6, name: "A6", occupied: false },
+            { id: 7, name: "A7", occupied: false },
+            { id: 8, name: "A8", occupied: true  },
+        ];
 
-            if (!plate) {
-                const err = document.getElementById('error-msg');
-                err.textContent = 'Please enter vehicle plate number';
-                err.classList.remove('hidden');
-                return;
-            }
+        function renderSlots(data) {
+            const grid = document.getElementById('slotGrid');
+            grid.innerHTML = '';
 
-            // Store booking details
-            localStorage.setItem('bookingId', 'BK001');
-            localStorage.setItem('vehiclePlate', plate);
-            localStorage.setItem('vehicleType', type);
+            data.forEach(slot => {
+                const btn = document.createElement('button');
+                btn.className = 'slot-card' + (slot.occupied ? ' occupied' : '');
+                btn.textContent = slot.name;
 
-            // Go to checkout page
-            window.location.href = 'checkout.html';
+                if (!slot.occupied) {
+                    btn.onclick = () => {
+                        localStorage.setItem('selectedSlot', slot.name);
+                        window.location.href = 'booking.html';
+                    };
+                }
+
+                grid.appendChild(btn);
+            });
+
+            // Update last updated time
+            const now = new Date();
+            document.getElementById('lastUpdated').textContent =
+                now.toLocaleTimeString();
         }
+
+        function loadSlots() {
+            // TODO: replace with real API call when Harnoor is ready
+            // fetch('http://192.168.1.12:8080/api/slots')
+            //   .then(r => r.json())
+            //   .then(data => renderSlots(data))
+            //   .catch(() => renderSlots(slots));
+
+            renderSlots(slots);
+        }
+
+        function logout() {
+            localStorage.clear();
+            window.location.href = 'login.html';
+        }
+
+        // Initial load
+        loadSlots();
+
+        // Auto-refresh every 5 seconds — Day 16 ✅
+        setInterval(loadSlots, 5000);
     </script>
+
 </body>
 </html>
