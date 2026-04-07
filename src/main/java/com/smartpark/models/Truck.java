@@ -1,4 +1,4 @@
-﻿package com.smartpark.models;
+package com.smartpark.models;
 
 import com.smartpark.interfaces.Payable;
 

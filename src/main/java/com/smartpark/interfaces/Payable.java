@@ -1,4 +1,4 @@
-﻿package com.smartpark.interfaces;
+package com.smartpark.interfaces;
 
 public interface Payable {
 
