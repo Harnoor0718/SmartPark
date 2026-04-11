@@ -17,14 +17,14 @@
 
     <dependencies>
         <!-- JavaFX -->
-        <dependency>
+      <dependency>
             <groupId>org.openjfx</groupId>
-            <artifactId>javafx-controls</artifactId>
+            <artifactId>javafx-fxml</artifactId>
             <version>${javafx.version}</version>
         </dependency>
         <dependency>
             <groupId>org.openjfx</groupId>
-            <artifactId>javafx-fxml</artifactId>
+            <artifactId>javafx-charts</artifactId>
             <version>${javafx.version}</version>
         </dependency>
     </dependencies>

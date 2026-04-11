@@ -133,4 +133,17 @@ public class DashboardController extends BaseController implements Refreshable {
             ex.printStackTrace();
         }
     }
+    @FXML
+    private void goToAdmin() {
+        stopAutoRefresh();
+        try {
+            Parent root = FXMLLoader.load(
+                getClass().getResource("/com/smartpark/admin.fxml")
+            );
+            Stage stage = (Stage) slotGrid.getScene().getWindow();
+            stage.setScene(new Scene(root, 900, 600));
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
 }
