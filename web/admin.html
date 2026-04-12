@@ -1,291 +1,311 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SmartPark – Admin</title>
-    <link rel="stylesheet" href="css/style.css">
-    <style>
-        nav {
-            background: #1a73e8;
-            color: white;
-            padding: 12px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        nav span { font-size: 20px; font-weight: bold; }
-
-        nav a {
-            color: white;
-            text-decoration: none;
-            font-size: 14px;
-            padding: 8px 16px;
-            border: 1px solid white;
-            border-radius: 6px;
-        }
-
-        .page-content { padding: 20px; }
-
-        /* Tab navigation */
-        .tabs {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 20px;
-            border-bottom: 2px solid #eee;
-            padding-bottom: 0;
-        }
-
-        .tab {
-            padding: 10px 20px;
-            cursor: pointer;
-            border: none;
-            background: none;
-            font-size: 14px;
-            color: #666;
-            border-bottom: 3px solid transparent;
-            margin-bottom: -2px;
-            width: auto;
-        }
-
-        .tab.active {
-            color: #1a73e8;
-            border-bottom: 3px solid #1a73e8;
-            font-weight: bold;
-        }
-
-        .tab-content { display: none; }
-        .tab-content.active { display: block; }
-
-        /* Stats */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-            gap: 16px;
-            margin-bottom: 24px;
-        }
-
-        .stat-card {
-            background: white;
-            border-radius: 10px;
-            padding: 16px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-            text-align: center;
-        }
-
-        .stat-card .value {
-            font-size: 24px;
-            font-weight: bold;
-        }
-
-        .stat-card .label {
-            font-size: 12px;
-            color: #666;
-            margin-top: 4px;
-        }
-
-        .blue { color: #1a73e8; }
-        .red { color: #f44336; }
-        .green { color: #4caf50; }
-
-        /* Table */
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            background: white;
-            border-radius: 10px;
-            overflow: hidden;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-        }
-
-        th {
-            background: #f8f9fa;
-            padding: 12px 16px;
-            text-align: left;
-            font-size: 13px;
-            color: #666;
-            font-weight: 600;
-        }
-
-        td {
-            padding: 12px 16px;
-            border-top: 1px solid #f0f0f0;
-            font-size: 14px;
-        }
-
-        .badge {
-            padding: 4px 10px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: bold;
-        }
-
-        .badge.available {
-            background: #e8f5e9;
-            color: #4caf50;
-        }
-
-        .badge.occupied {
-            background: #ffebee;
-            color: #f44336;
-        }
-
-        /* Sidebar on desktop */
-        @media (min-width: 768px) {
-            .tabs {
-                flex-direction: row;
-            }
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SmartPark | Admin Panel</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    body { margin: 0; font-family: Arial, sans-serif; background: #f0f2f5; }
+    nav {
+      background: #1a2b4a;
+      color: white;
+      padding: 14px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    nav span { font-size: 20px; font-weight: bold; }
+    nav a {
+      color: white;
+      text-decoration: none;
+      font-size: 14px;
+      background: rgba(255,255,255,0.2);
+      padding: 8px 16px;
+      border-radius: 6px;
+    }
+    .page-content { padding: 24px; }
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    .stat-card {
+      background: white;
+      border-radius: 10px;
+      padding: 20px;
+      text-align: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+    .stat-card h3 { margin: 0 0 8px; font-size: 13px; color: #666; }
+    .stat-value { font-size: 28px; font-weight: bold; color: #1a2b4a; margin: 0; }
+    .tabs {
+      display: flex;
+      gap: 4px;
+      margin-bottom: 20px;
+      border-bottom: 2px solid #e0e0e0;
+    }
+    .tab {
+      padding: 10px 20px;
+      cursor: pointer;
+      border: none;
+      background: none;
+      font-size: 14px;
+      color: #666;
+      border-bottom: 3px solid transparent;
+      margin-bottom: -2px;
+      width: auto;
+      font-weight: 500;
+    }
+    .tab.active { color: #1a2b4a; border-bottom: 3px solid #1a2b4a; font-weight: bold; }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+    th {
+      background: #1a2b4a;
+      color: white;
+      padding: 12px 16px;
+      text-align: left;
+      font-size: 13px;
+    }
+    td {
+      padding: 12px 16px;
+      border-top: 1px solid #f0f0f0;
+      font-size: 14px;
+    }
+    tr:hover { background: #f8f9fa; }
+    .badge {
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: bold;
+    }
+    .badge-available { background: #e8f5e9; color: #2e7d32; }
+    .badge-occupied { background: #ffebee; color: #c62828; }
+    .badge-completed { background: #e3f2fd; color: #1565c0; }
+    .badge-active { background: #e8f5e9; color: #2e7d32; }
+    .badge-pending { background: #fff3e0; color: #e65100; }
+    .badge-admin { background: #ede7f6; color: #4527a0; }
+    .badge-customer { background: #e3f2fd; color: #1565c0; }
+    .revenue-box {
+      background: white;
+      border-radius: 10px;
+      padding: 24px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      margin-bottom: 20px;
+    }
+    .revenue-box h3 { margin: 0 0 16px; color: #1a2b4a; }
+    .revenue-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px 0;
+      border-bottom: 1px solid #f0f0f0;
+      font-size: 14px;
+    }
+    .revenue-row:last-child { border-bottom: none; }
+    .revenue-row span:last-child { font-weight: bold; color: #1a2b4a; }
+    @media (max-width: 600px) {
+      .stats-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+  </style>
 </head>
-<body style="display:block; padding:0;">
+<body>
+  <nav>
+    <span>🅿️ SmartPark — Admin</span>
+    <a href="dashboard.html">← Dashboard</a>
+  </nav>
 
-    <nav>
-        <span>SmartPark — Admin</span>
-        <a href="dashboard.html">← Dashboard</a>
-    </nav>
+  <div class="page-content">
 
-    <div class="page-content">
-
-        <!-- Tab Navigation -->
-        <div class="tabs">
-            <button class="tab active" onclick="showTab('slots')">🅿️ Slots</button>
-            <button class="tab" onclick="showTab('bookings')">📋 Bookings</button>
-            <button class="tab" onclick="showTab('analytics')">📊 Analytics</button>
-        </div>
-
-        <!-- Slots Tab -->
-        <div class="tab-content active" id="slots">
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <div class="value blue">8</div>
-                    <div class="label">Total Slots</div>
-                </div>
-                <div class="stat-card">
-                    <div class="value green">5</div>
-                    <div class="label">Available</div>
-                </div>
-                <div class="stat-card">
-                    <div class="value red">3</div>
-                    <div class="label">Occupied</div>
-                </div>
-            </div>
-
-            <table>
-                <thead>
-                    <tr>
-                        <th>Slot</th>
-                        <th>Status</th>
-                        <th>Last Updated</th>
-                    </tr>
-                </thead>
-                <tbody id="slotTableBody"></tbody>
-            </table>
-        </div>
-
-        <!-- Bookings Tab -->
-        <div class="tab-content" id="bookings">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Booking ID</th>
-                        <th>Slot</th>
-                        <th>Vehicle</th>
-                        <th>Amount</th>
-                        <th>Status</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>BK001</td>
-                        <td>A1</td>
-                        <td>PB-01-AB-1234</td>
-                        <td>₹50</td>
-                        <td><span class="badge available">Completed</span></td>
-                    </tr>
-                    <tr>
-                        <td>BK002</td>
-                        <td>A3</td>
-                        <td>PB-02-CD-5678</td>
-                        <td>₹50</td>
-                        <td><span class="badge occupied">Active</span></td>
-                    </tr>
-                    <tr>
-                        <td>BK003</td>
-                        <td>A5</td>
-                        <td>PB-03-EF-9012</td>
-                        <td>₹50</td>
-                        <td><span class="badge occupied">Active</span></td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-
-        <!-- Analytics Tab -->
-        <div class="tab-content" id="analytics">
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <div class="value blue">₹5,200</div>
-                    <div class="label">Total Revenue</div>
-                </div>
-                <div class="stat-card">
-                    <div class="value green">104</div>
-                    <div class="label">Total Bookings</div>
-                </div>
-                <div class="stat-card">
-                    <div class="value blue">73%</div>
-                    <div class="label">Avg Occupancy</div>
-                </div>
-            </div>
-            <p style="text-align:center; margin-top:20px;">
-                <a href="analytics.html"
-                   style="background:#1a73e8; color:white; padding:12px 24px;
-                          border-radius:8px; text-decoration:none; font-weight:bold;">
-                    View Full Analytics →
-                </a>
-            </p>
-        </div>
-
+    <!-- Stats -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <h3>👥 Total Users</h3>
+        <p class="stat-value" id="total-users">...</p>
+      </div>
+      <div class="stat-card">
+        <h3>📋 Total Bookings</h3>
+        <p class="stat-value" id="total-bookings">...</p>
+      </div>
+      <div class="stat-card">
+        <h3>🅿️ Available Slots</h3>
+        <p class="stat-value" id="available-slots">...</p>
+      </div>
+      <div class="stat-card">
+        <h3>💰 Total Revenue</h3>
+        <p class="stat-value" id="total-revenue">...</p>
+      </div>
     </div>
 
-    <script>
-        // Render slot table
-        const slots = [
-            { name:"A1", occupied:false },
-            { name:"A2", occupied:false },
-            { name:"A3", occupied:true  },
-            { name:"A4", occupied:false },
-            { name:"A5", occupied:true  },
-            { name:"A6", occupied:false },
-            { name:"A7", occupied:false },
-            { name:"A8", occupied:true  },
-        ];
+    <!-- Tabs -->
+    <div class="tabs">
+      <button class="tab active" onclick="showTab('slots', this)">🅿️ Slots</button>
+      <button class="tab" onclick="showTab('users', this)">👥 Users</button>
+      <button class="tab" onclick="showTab('revenue', this)">💰 Revenue</button>
+    </div>
 
-        const tbody = document.getElementById('slotTableBody');
-        slots.forEach(slot => {
-            tbody.innerHTML += `
-                <tr>
-                    <td><strong>${slot.name}</strong></td>
-                    <td>
-                        <span class="badge ${slot.occupied ? 'occupied' : 'available'}">
-                            ${slot.occupied ? 'Occupied' : 'Available'}
-                        </span>
-                    </td>
-                    <td>${new Date().toLocaleTimeString()}</td>
-                </tr>
-            `;
+    <!-- Slots Tab -->
+    <div class="tab-content active" id="slots">
+      <table>
+        <thead>
+          <tr>
+            <th>Slot Number</th>
+            <th>Type</th>
+            <th>Status</th>
+            <th>Location</th>
+          </tr>
+        </thead>
+        <tbody id="slots-table"></tbody>
+      </table>
+    </div>
+
+    <!-- Users Tab -->
+    <div class="tab-content" id="users">
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Username</th>
+            <th>Email</th>
+            <th>Role</th>
+            <th>Created At</th>
+          </tr>
+        </thead>
+        <tbody id="users-table"></tbody>
+      </table>
+    </div>
+
+    <!-- Revenue Tab -->
+    <div class="tab-content" id="revenue">
+      <div class="revenue-box">
+        <h3>📊 Revenue Summary</h3>
+        <div class="revenue-row">
+          <span>Total Revenue</span>
+          <span id="rev-total">...</span>
+        </div>
+        <div class="revenue-row">
+          <span>Total Completed Bookings</span>
+          <span id="rev-bookings">...</span>
+        </div>
+        <div class="revenue-row">
+          <span>Today's Revenue</span>
+          <span id="rev-today">...</span>
+        </div>
+        <div class="revenue-row">
+          <span>Occupancy Rate</span>
+          <span id="rev-occupancy">...</span>
+        </div>
+      </div>
+
+      <div class="revenue-box">
+        <h3>📅 Daily Revenue</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Bookings</th>
+              <th>Revenue</th>
+            </tr>
+          </thead>
+          <tbody id="daily-table"></tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    // Check admin access
+    const role = localStorage.getItem('role');
+    if (role !== 'admin') {
+      alert('Access denied! Admin only.');
+      window.location.href = 'dashboard.html';
+    }
+
+    // Load stats
+    fetch('http://localhost:8080/api/admin/stats')
+      .then(r => r.json())
+      .then(data => {
+        document.getElementById('total-users').innerText = data.totalUsers;
+        document.getElementById('total-bookings').innerText = data.totalBookings;
+        document.getElementById('available-slots').innerText = data.availableSlots + '/' + data.totalSlots;
+        document.getElementById('total-revenue').innerText = 'Rs.' + data.totalRevenue;
+        document.getElementById('rev-total').innerText = 'Rs.' + data.totalRevenue;
+        document.getElementById('rev-bookings').innerText = data.totalBookings;
+        document.getElementById('rev-today').innerText = 'Rs.' + data.todayRevenue;
+        document.getElementById('rev-occupancy').innerText = data.occupancyRate;
+      });
+
+    // Load slots
+    fetch('http://localhost:8080/api/admin/slots')
+      .then(r => r.json())
+      .then(data => {
+        const tbody = document.getElementById('slots-table');
+        data.slots.forEach(slot => {
+          tbody.innerHTML += `
+            <tr>
+              <td><strong>${slot.slotNumber}</strong></td>
+              <td>${slot.slotType}</td>
+              <td><span class="badge ${slot.isOccupied ? 'badge-occupied' : 'badge-available'}">
+                ${slot.isOccupied ? 'Occupied' : 'Available'}
+              </span></td>
+              <td>${slot.locationName}</td>
+            </tr>`;
         });
+      });
 
-        function showTab(tabName) {
-            document.querySelectorAll('.tab-content').forEach(t => 
-                t.classList.remove('active'));
-            document.querySelectorAll('.tab').forEach(t => 
-                t.classList.remove('active'));
-            document.getElementById(tabName).classList.add('active');
-            event.target.classList.add('active');
+    // Load users
+    fetch('http://localhost:8080/api/admin/users')
+      .then(r => r.json())
+      .then(data => {
+        const tbody = document.getElementById('users-table');
+        data.users.forEach(user => {
+          tbody.innerHTML += `
+            <tr>
+              <td>${user.id}</td>
+              <td><strong>${user.username}</strong></td>
+              <td>${user.email}</td>
+              <td><span class="badge ${user.role === 'admin' ? 'badge-admin' : 'badge-customer'}">
+                ${user.role.toUpperCase()}
+              </span></td>
+              <td>${user.createdAt}</td>
+            </tr>`;
+        });
+      });
+
+    // Load daily revenue
+    fetch('http://localhost:8080/api/reports/revenue?period=daily')
+      .then(r => r.json())
+      .then(data => {
+        const tbody = document.getElementById('daily-table');
+        if (data.data.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="3" style="text-align:center;color:#999;">No revenue data yet</td></tr>';
+        } else {
+          data.data.forEach(row => {
+            tbody.innerHTML += `
+              <tr>
+                <td>${row.date}</td>
+                <td>${row.bookings}</td>
+                <td><strong>Rs.${row.revenue}</strong></td>
+              </tr>`;
+          });
         }
-    </script>
+      });
 
+    function showTab(tabName, btn) {
+      document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      document.getElementById(tabName).classList.add('active');
+      btn.classList.add('active');
+    }
+  </script>
 </body>
 </html>
