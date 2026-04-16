@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.geometry.*?>
 
 <StackPane xmlns:fx="http://javafx.com/fxml"
            fx:controller="com.smartpark.LoginController"
            style="-fx-background-color:#1a2b4a;">
 
     <!-- CARD -->
-    <VBox alignment="CENTER" spacing="18"
+    <VBox alignment="CENTER" spacing="20"
           maxWidth="420"
           style="-fx-background-color:white;
                  -fx-padding:40 36;
                  -fx-background-radius:16;
-                 -fx-effect:dropshadow(gaussian, rgba(0,0,0,0.3), 30, 0, 0, 10);">
+                 -fx-effect:dropshadow(gaussian, rgba(0,0,0,0.35), 40, 0, 0, 12);">
 
         <!-- LOGO -->
-        <VBox alignment="CENTER" spacing="8">
+        <VBox alignment="CENTER" spacing="10">
             <Label text="🅿"
                    style="-fx-background-color:#1a2b4a;
                           -fx-text-fill:white;
@@ -94,7 +94,9 @@
                        -fx-font-weight:bold;
                        -fx-padding:14;
                        -fx-background-radius:8;
-                       -fx-cursor:hand;"/>
+                       -fx-cursor:hand;"
+                onMouseEntered="this.setStyle('-fx-background-color:#c0392b; -fx-text-fill:white; -fx-font-size:16px; -fx-font-weight:bold; -fx-padding:14; -fx-background-radius:8;')"
+                onMouseExited="this.setStyle('-fx-background-color:#1a2b4a; -fx-text-fill:white; -fx-font-size:16px; -fx-font-weight:bold; -fx-padding:14; -fx-background-radius:8;')"/>
 
         <!-- REGISTER LINK -->
         <HBox alignment="CENTER" spacing="5">
