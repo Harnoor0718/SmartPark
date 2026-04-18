@@ -13,7 +13,8 @@ public class Session {
     private String selectedSlotType;
     private int selectedSlotId;
 
-    private Session() {}
+    private Session() {
+    }
 
     public static Session getInstance() {
         if (instance == null) {
@@ -23,17 +24,37 @@ public class Session {
     }
 
     // ================= AUTH =================
-    public String getToken() { return token; }
-    public void setToken(String token) { this.token = token; }
+    public String getToken() {
+        return token;
+    }
 
-    public String getUsername() { return username; }
-    public void setUsername(String username) { this.username = username; }
+    public void setToken(String token) {
+        this.token = token;
+    }
 
-    public String getRole() { return role; }
-    public void setRole(String role) { this.role = role; }
+    public String getUsername() {
+        return username;
+    }
 
-    public int getUserId() { return userId; }
-    public void setUserId(int userId) { this.userId = userId; }
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
+
+    public int getUserId() {
+        return userId;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
+    }
 
     // ================= SLOT =================
     public void setSelectedSlot(String number, String type, int slotId) {
@@ -42,9 +63,17 @@ public class Session {
         this.selectedSlotId = slotId;
     }
 
-    public String getSelectedSlotNumber() { return selectedSlotNumber; }
-    public String getSelectedSlotType() { return selectedSlotType; }
-    public int getSelectedSlotId() { return selectedSlotId; }
+    public String getSelectedSlotNumber() {
+        return selectedSlotNumber;
+    }
+
+    public String getSelectedSlotType() {
+        return selectedSlotType;
+    }
+
+    public int getSelectedSlotId() {
+        return selectedSlotId;
+    }
 
     // ================= CLEAR =================
     public void clear() {
@@ -55,5 +84,26 @@ public class Session {
         selectedSlotNumber = null;
         selectedSlotType = null;
         selectedSlotId = 0;
+        bookingId = 0;
+        vehiclePlate = null;
+    }
+
+    private int bookingId;
+    private String vehiclePlate;
+
+    public int getBookingId() {
+        return bookingId;
+    }
+
+    public void setBookingId(int bookingId) {
+        this.bookingId = bookingId;
+    }
+
+    public String getVehiclePlate() {
+        return vehiclePlate;
+    }
+
+    public void setVehiclePlate(String vehiclePlate) {
+        this.vehiclePlate = vehiclePlate;
     }
 }

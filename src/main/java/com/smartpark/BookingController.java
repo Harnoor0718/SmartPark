@@ -1,5 +1,6 @@
 package com.smartpark;
 
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -19,20 +20,39 @@ public class BookingController extends BaseController {
     @FXML private Button confirmBtn;
     @FXML private Label errorLabel;
 
-    private int selectedSlotId = 1;
+    private int selectedSlotId;
+    private String selectedSlotNumber;
+    private String selectedSlotType;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         errorLabel.setVisible(false);
+
+        // Get slot info from Session
+        selectedSlotId = Session.getInstance().getSelectedSlotId();
+        selectedSlotNumber = Session.getInstance().getSelectedSlotNumber();
+        selectedSlotType = Session.getInstance().getSelectedSlotType();
+
         vehicleTypeBox.getItems().addAll("Car", "Bike", "Truck");
-        vehicleTypeBox.setValue("Car");
-        slotLabel.setText("Selected Slot: A" + selectedSlotId);
+
+        // Pre-select based on slot type
+        if (selectedSlotType != null) {
+            switch (selectedSlotType.toUpperCase()) {
+                case "BIKE" -> vehicleTypeBox.setValue("Bike");
+                case "TRUCK" -> vehicleTypeBox.setValue("Truck");
+                default -> vehicleTypeBox.setValue("Car");
+            }
+        } else {
+            vehicleTypeBox.setValue("Car");
+        }
+
+        slotLabel.setText("Selected Slot: " + (selectedSlotNumber != null ? selectedSlotNumber : "N/A")
+                + " (" + (selectedSlotType != null ? selectedSlotType : "") + ")");
     }
 
     @FXML
     private void handleConfirmBooking() {
         String vehiclePlate = vehiclePlateField.getText().trim();
-        String vehicleType = vehicleTypeBox.getValue();
 
         if (vehiclePlate.isEmpty()) {
             showError(errorLabel, "Please enter vehicle plate number");
@@ -54,14 +74,13 @@ public class BookingController extends BaseController {
                     );
 
                 HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create(BASE_URL + "/bookings"))
-                    .header("Content-Type", "application/json")
-                    .header("Authorization", "Bearer " + Session.getInstance().getToken())
-                    .POST(HttpRequest.BodyPublishers.ofString(json))
-                    .build();
+                        .uri(URI.create(BASE_URL + "/bookings"))
+                        .header("Content-Type", "application/json")
+                        .POST(HttpRequest.BodyPublishers.ofString(json))
+                        .build();
 
                 HttpResponse<String> response = httpClient.send(
-                    request, HttpResponse.BodyHandlers.ofString()
+                        request, HttpResponse.BodyHandlers.ofString()
                 );
                 return response.body();
             }
@@ -69,43 +88,51 @@ public class BookingController extends BaseController {
 
         task.setOnSucceeded(e -> {
             String body = task.getValue();
-            if (body.contains("bookingId") || body.contains("success")) {
-                // Go to confirmation screen
+            if (body.contains("\"status\":\"success\"")) {
                 try {
-                    Parent root = FXMLLoader.load(
-                        getClass().getResource("/com/smartpark/confirmation.fxml")
-                    );
-                    Stage stage = (Stage) confirmBtn.getScene().getWindow();
-                    stage.setScene(new Scene(root, 900, 600));
+                    // Parse bookingId from response
+                    String bookingIdStr = body.split("\"bookingId\":")[1].split("[,}]")[0].trim();
+                    int bookingId = Integer.parseInt(bookingIdStr);
+
+                    // Store bookingId in session for confirmation page
+                    Session.getInstance().setBookingId(bookingId);
+                    Session.getInstance().setVehiclePlate(vehiclePlate);
+
+                    Platform.runLater(() -> loadPage("/com/smartpark/confirmation.fxml", 900, 600));
+
                 } catch (Exception ex) {
-                    showError(errorLabel, "Failed to load confirmation");
+                    Platform.runLater(() -> showError(errorLabel, "Booking done but failed to load confirmation"));
                 }
             } else {
-                showError(errorLabel, "Booking failed. Try again.");
-                confirmBtn.setDisable(false);
-                confirmBtn.setText("Confirm Booking");
+                Platform.runLater(() -> {
+                    showError(errorLabel, "Booking failed. Slot may already be occupied.");
+                    confirmBtn.setDisable(false);
+                    confirmBtn.setText("Confirm Booking");
+                });
             }
         });
 
-        task.setOnFailed(e -> {
-            showError(errorLabel, "Cannot connect to server");
+        task.setOnFailed(e -> Platform.runLater(() -> {
+            showError(errorLabel, "Cannot connect to server. Is Spring Boot running?");
             confirmBtn.setDisable(false);
             confirmBtn.setText("Confirm Booking");
-        });
+        }));
 
         new Thread(task).start();
     }
 
     @FXML
     private void goBack() {
+        loadPage("/com/smartpark/dashboard.fxml", 900, 600);
+    }
+
+    private void loadPage(String fxmlPath, int width, int height) {
         try {
-            Parent root = FXMLLoader.load(
-                getClass().getResource("/com/smartpark/dashboard.fxml")
-            );
+            Parent root = FXMLLoader.load(getClass().getResource(fxmlPath));
             Stage stage = (Stage) confirmBtn.getScene().getWindow();
-            stage.setScene(new Scene(root, 900, 600));
-        } catch (Exception ex) {
-            ex.printStackTrace();
+            stage.setScene(new Scene(root, width, height));
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }
