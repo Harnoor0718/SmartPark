@@ -26,7 +26,6 @@ public class LoginController extends BaseController {
         errorLabel.setVisible(false);
     }
 
-    // 🔥 ENTER KEY SUPPORT (like HTML)
     @FXML
     private void handleEnterKey(KeyEvent event) {
         if (event.getCode() == KeyCode.ENTER) {
@@ -34,7 +33,6 @@ public class LoginController extends BaseController {
         }
     }
 
-    // 🔐 LOGIN LOGIC
     @FXML
     private void handleLogin() {
         String email = usernameField.getText().trim();
@@ -66,63 +64,68 @@ public class LoginController extends BaseController {
                 HttpResponse<String> response = httpClient.send(
                         request, HttpResponse.BodyHandlers.ofString()
                 );
-
                 return response.body();
             }
         };
 
-        // ✅ SUCCESS
         task.setOnSucceeded(e -> {
             String body = task.getValue();
 
-            try {
-                if (body.contains("token")) {
-                    // extract token
-                    String token = body.split("\"token\":\"")[1].split("\"")[0];
+            if (body.contains("\"status\":\"success\"")) {
+                try {
+                    // Parse userId
+                    String userIdStr = body.split("\"userId\":")[1].split("[,}]")[0].trim();
+                    int userId = Integer.parseInt(userIdStr);
 
-                    Session.getInstance().setToken(token);
-                    Session.getInstance().setUsername(email);
+                    // Parse username
+                    String username = body.split("\"username\":\"")[1].split("\"")[0];
 
-                    loadPage("/com/smartpark/dashboard.fxml");
-                } else {
-                    showError(errorLabel, "Invalid email or password");
+                    // Parse role
+                    String role = body.split("\"role\":\"")[1].split("\"")[0];
+
+                    // Store in session
+                    Session.getInstance().setUserId(userId);
+                    Session.getInstance().setUsername(username);
+                    Session.getInstance().setRole(role);
+
+                    // Navigate to dashboard
+                    loadPage("/com/smartpark/dashboard.fxml", 900, 600);
+
+                } catch (Exception ex) {
+                    showError(errorLabel, "Login failed — unexpected response");
                     resetButton();
                 }
-            } catch (Exception ex) {
-                showError(errorLabel, "Login failed (invalid response)");
+            } else {
+                showError(errorLabel, "Invalid email or password");
                 resetButton();
             }
         });
 
-        // ❌ FAILED
         task.setOnFailed(e -> {
-            showError(errorLabel, "Cannot connect to server");
+            showError(errorLabel, "Cannot connect to server. Is Spring Boot running?");
             resetButton();
         });
 
         new Thread(task).start();
     }
 
-    // 🔄 RESET BUTTON
     private void resetButton() {
         loginBtn.setDisable(false);
         loginBtn.setText("Login");
     }
 
-    // 🔁 NAVIGATION METHOD (Reusable)
-    private void loadPage(String fxmlPath) {
+    private void loadPage(String fxmlPath, int width, int height) {
         try {
             Parent root = FXMLLoader.load(getClass().getResource(fxmlPath));
             Stage stage = (Stage) loginBtn.getScene().getWindow();
-            stage.setScene(new Scene(root, 900, 600));
+            stage.setScene(new Scene(root, width, height));
         } catch (Exception e) {
             showError(errorLabel, "Failed to load page");
         }
     }
 
-    // 🔗 GO TO REGISTER PAGE
     @FXML
     private void goToRegister() {
-        loadPage("/com/smartpark/register.fxml");
+        loadPage("/com/smartpark/register.fxml", 800, 600);
     }
 }
