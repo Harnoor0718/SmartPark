@@ -2,6 +2,7 @@ package com.smartpark;
 
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -33,21 +34,17 @@ public class DashboardController extends BaseController implements Refreshable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-
         String username = Session.getInstance().getUsername();
         String role = Session.getInstance().getRole();
 
-        navUsername.setText(username);
-        welcomeName.setText(username);
+        navUsername.setText(username != null ? username : "");
+        welcomeName.setText(username != null ? username : "");
         userRole.setText(role != null ? role.toUpperCase() : "");
 
         loadSlots();
         startAutoRefresh();
     }
 
-    // ─────────────────────────────
-    // Auto Refresh
-    // ─────────────────────────────
     private void startAutoRefresh() {
         autoRefresh = new Timeline(
             new KeyFrame(Duration.seconds(5), e -> loadSlots())
@@ -60,147 +57,114 @@ public class DashboardController extends BaseController implements Refreshable {
         if (autoRefresh != null) autoRefresh.stop();
     }
 
-    // ─────────────────────────────
-    // API Call
-    // ─────────────────────────────
     private void loadSlots() {
-
         javafx.concurrent.Task<String> task = new javafx.concurrent.Task<>() {
             @Override
             protected String call() throws Exception {
-
                 HttpRequest request = HttpRequest.newBuilder()
                         .uri(URI.create(BASE_URL + "/slots"))
-                        .header("Authorization", "Bearer " + Session.getInstance().getToken())
                         .GET()
                         .build();
 
                 HttpResponse<String> response = httpClient.send(
-                        request,
-                        HttpResponse.BodyHandlers.ofString()
+                        request, HttpResponse.BodyHandlers.ofString()
                 );
-
                 return response.body();
             }
         };
 
-        task.setOnSucceeded(e -> renderSlots(task.getValue()));
-        task.setOnFailed(e -> System.out.println("Failed to load slots"));
+        task.setOnSucceeded(e -> Platform.runLater(() -> renderSlots(task.getValue())));
+        task.setOnFailed(e -> System.out.println("Failed to load slots: " + task.getException()));
 
         new Thread(task).start();
     }
 
-    // ─────────────────────────────
-    // Render UI (same as HTML)
-    // ─────────────────────────────
     private void renderSlots(String json) {
-
         slotGrid.getChildren().clear();
-
-        // ⚠️ SIMPLE parsing (you can improve later)
-        String[] slots = json.split("\\{");
 
         int total = 0, available = 0, occupied = 0;
 
-        for (String s : slots) {
+        try {
+            // Split by each slot object
+            String[] parts = json.split("\\{");
 
-            if (!s.contains("slotNumber")) continue;
+            for (String part : parts) {
+                if (!part.contains("slotNumber")) continue;
 
-            total++;
+                total++;
 
-            String number = s.split("\"slotNumber\":\"")[1].split("\"")[0];
-            String type = s.split("\"slotType\":\"")[1].split("\"")[0];
-            boolean isOccupied = s.contains("\"occupied\":true");
+                // Parse fields
+                String number = part.split("\"slotNumber\":\"")[1].split("\"")[0];
+                String type = part.split("\"slotType\":\"")[1].split("\"")[0];
+                String idStr = part.split("\"id\":")[1].split("[,}]")[0].trim();
+                int slotId = Integer.parseInt(idStr);
+                boolean isOccupied = part.contains("\"occupied\":true");
 
-            if (isOccupied) occupied++;
-            else available++;
+                if (isOccupied) occupied++;
+                else available++;
 
-            Button btn = new Button();
-            btn.setPrefSize(100, 80);
+                Button btn = new Button(number + "\n" + type);
+                btn.setPrefSize(100, 80);
+                btn.setStyle(
+                    "-fx-background-color:" + (isOccupied ? "#e74c3c" : "#4caf50") + ";" +
+                    "-fx-text-fill:white;" +
+                    "-fx-font-weight:bold;" +
+                    "-fx-background-radius:8;" +
+                    "-fx-font-size:13px;"
+                );
 
-            btn.setText(number + "\n" + type);
+                if (!isOccupied) {
+                    btn.setOnAction(e -> goToBooking(number, type, slotId));
+                } else {
+                    btn.setDisable(true);
+                }
 
-            btn.setStyle(
-                "-fx-background-color:" + (isOccupied ? "#e74c3c" : "#4caf50") + ";" +
-                "-fx-text-fill:white;" +
-                "-fx-font-weight:bold;" +
-                "-fx-background-radius:8;"
-            );
-
-            if (!isOccupied) {
-                btn.setOnAction(e -> goToBooking(number, type));
-            } else {
-                btn.setDisable(true);
+                slotGrid.getChildren().add(btn);
             }
 
-            slotGrid.getChildren().add(btn);
+        } catch (Exception e) {
+            System.out.println("Error parsing slots: " + e.getMessage());
         }
 
-        // Stats update
         totalSlots.setText(String.valueOf(total));
         availableSlots.setText(String.valueOf(available));
         occupiedSlots.setText(String.valueOf(occupied));
 
-        // Last updated time
         java.time.LocalTime now = java.time.LocalTime.now();
-        lastUpdated.setText(
-            String.format("%02d:%02d:%02d",
-                now.getHour(), now.getMinute(), now.getSecond())
-        );
+        lastUpdated.setText("Last updated: " +
+            String.format("%02d:%02d:%02d", now.getHour(), now.getMinute(), now.getSecond()));
     }
 
-    // ─────────────────────────────
-    // Navigation
-    // ─────────────────────────────
-    private void goToBooking(String number, String type) {
+    private void goToBooking(String number, String type, int slotId) {
         stopAutoRefresh();
+        Session.getInstance().setSelectedSlot(number, type, slotId);
+        loadPage("/com/smartpark/booking.fxml", 900, 600);
+    }
 
-        try {
-            Session.getInstance().setSelectedSlot(number, type);
-
-            Parent root = FXMLLoader.load(
-                getClass().getResource("/com/smartpark/booking.fxml")
-            );
-
-            Stage stage = (Stage) slotGrid.getScene().getWindow();
-            stage.setScene(new Scene(root, 900, 600));
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    @FXML
+    private void goToCheckIn() {
+        stopAutoRefresh();
+        loadPage("/com/smartpark/checkin.fxml", 900, 600);
     }
 
     @FXML
     private void handleLogout() {
         stopAutoRefresh();
-
         Session.getInstance().clear();
-
-        try {
-            Parent root = FXMLLoader.load(
-                getClass().getResource("/com/smartpark/login.fxml")
-            );
-
-            Stage stage = (Stage) slotGrid.getScene().getWindow();
-            stage.setScene(new Scene(root, 800, 600));
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        loadPage("/com/smartpark/login.fxml", 800, 600);
     }
 
     @FXML
     private void goToAdmin() {
         stopAutoRefresh();
+        loadPage("/com/smartpark/admin.fxml", 900, 600);
+    }
 
+    private void loadPage(String fxmlPath, int width, int height) {
         try {
-            Parent root = FXMLLoader.load(
-                getClass().getResource("/com/smartpark/admin.fxml")
-            );
-
+            Parent root = FXMLLoader.load(getClass().getResource(fxmlPath));
             Stage stage = (Stage) slotGrid.getScene().getWindow();
-            stage.setScene(new Scene(root, 900, 600));
-
+            stage.setScene(new Scene(root, width, height));
         } catch (Exception e) {
             e.printStackTrace();
         }
