@@ -2,44 +2,71 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane xmlns:fx="http://javafx.com/fxml"
+<BorderPane xmlns:fx="http://javafx.com/fxml"
             fx:controller="com.smartpark.BookingController"
-            prefWidth="900" prefHeight="600">
+            prefWidth="900" prefHeight="600"
+            style="-fx-background-color:#f0f2f5;">
 
-    <VBox spacing="20"
-          AnchorPane.topAnchor="60"
-          AnchorPane.leftAnchor="250"
-          AnchorPane.rightAnchor="250">
+    <!-- NAVBAR -->
+    <top>
+        <HBox style="-fx-background-color:#1a2b4a;-fx-padding:14 24;"
+              alignment="CENTER_LEFT" spacing="16">
+            <Label text="🅿️ SmartPark"
+                   style="-fx-text-fill:white;-fx-font-size:20px;-fx-font-weight:bold;"/>
+            <HBox HBox.hgrow="ALWAYS"/>
+            <Label text="Book a Slot"
+                   style="-fx-text-fill:white;-fx-font-size:14px;-fx-opacity:0.8;"/>
+        </HBox>
+    </top>
 
-        <Label text="Book a Parking Slot"
-               style="-fx-font-size:24px; -fx-font-weight:bold; -fx-text-fill:#1a73e8;"/>
+    <center>
+        <VBox alignment="TOP_CENTER" style="-fx-padding:40 0;">
+            <VBox spacing="16" maxWidth="480" minWidth="420"
+                  style="-fx-background-color:white;-fx-padding:32;
+                         -fx-background-radius:12;
+                         -fx-effect:dropshadow(gaussian,rgba(0,0,0,0.08),12,0,0,4);">
 
-        <Label fx:id="slotLabel"
-               style="-fx-font-size:16px; -fx-text-fill:#333;"/>
+                <Label text="Book a Parking Slot"
+                       style="-fx-font-size:22px;-fx-font-weight:bold;-fx-text-fill:#1a2b4a;"/>
 
-        <Label text="Vehicle Type:"/>
-        <ComboBox fx:id="vehicleTypeBox" maxWidth="Infinity"/>
+                <Label fx:id="slotLabel"
+                       style="-fx-font-size:14px;-fx-text-fill:#555;
+                              -fx-background-color:#f0f4ff;-fx-padding:10 14;
+                              -fx-background-radius:8;"/>
 
-        <Label text="Vehicle Plate Number:"/>
-        <TextField fx:id="vehiclePlateField"
-                   promptText="e.g. PB-01-AB-1234"
-                   style="-fx-padding:12; -fx-font-size:14px;"/>
+                <!-- ERROR -->
+                <Label fx:id="errorLabel" visible="false" wrapText="true" maxWidth="Infinity"
+                       style="-fx-background-color:#ffebee;-fx-text-fill:#c62828;
+                              -fx-padding:10 14;-fx-border-color:#ef9a9a;
+                              -fx-border-radius:8;-fx-background-radius:8;"/>
 
-        <Button fx:id="confirmBtn"
-                text="Confirm Booking"
-                onAction="#handleConfirmBooking"
-                maxWidth="Infinity"
-                style="-fx-background-color:#1a73e8; -fx-text-fill:white;
-                       -fx-font-size:14px; -fx-padding:12;"/>
+                <VBox spacing="5">
+                    <Label text="Vehicle Type"
+                           style="-fx-font-size:13px;-fx-font-weight:bold;-fx-text-fill:#444;"/>
+                    <ComboBox fx:id="vehicleTypeBox" maxWidth="Infinity"
+                              style="-fx-font-size:14px;-fx-padding:4;"/>
+                </VBox>
 
-        <Button text="← Back to Dashboard"
-                onAction="#goBack"
-                maxWidth="Infinity"
-                style="-fx-background-color:#eee; -fx-text-fill:#333;
-                       -fx-font-size:14px; -fx-padding:12;"/>
+                <VBox spacing="5">
+                    <Label text="Vehicle Plate Number"
+                           style="-fx-font-size:13px;-fx-font-weight:bold;-fx-text-fill:#444;"/>
+                    <TextField fx:id="vehiclePlateField" promptText="e.g. PB-01-AB-1234"
+                               style="-fx-padding:11 14;-fx-font-size:14px;
+                                      -fx-border-color:#e0e0e0;-fx-border-width:2;
+                                      -fx-background-radius:8;-fx-border-radius:8;"/>
+                </VBox>
 
-        <Label fx:id="errorLabel" visible="false"
-               style="-fx-text-fill:red; -fx-font-size:13px;"/>
+                <Button fx:id="confirmBtn" text="Confirm Booking"
+                        onAction="#handleConfirmBooking" maxWidth="Infinity"
+                        style="-fx-background-color:#1a2b4a;-fx-text-fill:white;
+                               -fx-font-size:15px;-fx-font-weight:bold;-fx-padding:13;
+                               -fx-background-radius:8;-fx-cursor:hand;"/>
 
-    </VBox>
-</AnchorPane>
+                <Button text="← Back to Dashboard" onAction="#goBack" maxWidth="Infinity"
+                        style="-fx-background-color:#f0f2f5;-fx-text-fill:#1a2b4a;
+                               -fx-font-size:14px;-fx-padding:11;-fx-background-radius:8;
+                               -fx-border-color:#ddd;-fx-border-radius:8;-fx-cursor:hand;"/>
+            </VBox>
+        </VBox>
+    </center>
+</BorderPane>

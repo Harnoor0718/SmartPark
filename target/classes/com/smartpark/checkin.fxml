@@ -2,58 +2,78 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane xmlns:fx="http://javafx.com/fxml"
+<BorderPane xmlns:fx="http://javafx.com/fxml"
             fx:controller="com.smartpark.CheckinController"
-            prefWidth="900" prefHeight="600">
+            prefWidth="900" prefHeight="600"
+            style="-fx-background-color:#f0f2f5;">
 
-    <VBox spacing="20"
-          AnchorPane.topAnchor="60"
-          AnchorPane.leftAnchor="250"
-          AnchorPane.rightAnchor="250">
-
-        <Label text="Check In / Check Out"
-               style="-fx-font-size:24px; -fx-font-weight:bold; -fx-text-fill:#1a73e8;"/>
-
-        <Label text="Enter your Booking ID:"/>
-
-        <TextField fx:id="bookingIdField"
-                   promptText="e.g. BK001"
-                   style="-fx-padding:12; -fx-font-size:14px;"/>
-
-        <Label fx:id="slotInfoLabel"
-               style="-fx-font-size:14px; -fx-text-fill:#666;"/>
-
-        <Label fx:id="statusLabel"
-               style="-fx-font-size:16px;"/>
-
-        <HBox spacing="12">
-            <Button fx:id="checkinBtn"
-                    text="Check In"
-                    onAction="#handleCheckin"
-                    prefWidth="180"
-                    style="-fx-background-color:#4caf50; -fx-text-fill:white;
-                           -fx-font-size:14px; -fx-padding:12;"/>
-
-            <Button fx:id="checkoutBtn"
-                    text="Check Out"
-                    onAction="#handleCheckout"
-                    prefWidth="180"
-                    disable="true"
-                    style="-fx-background-color:#f44336; -fx-text-fill:white;
-                           -fx-font-size:14px; -fx-padding:12;"/>
+    <!-- NAVBAR -->
+    <top>
+        <HBox style="-fx-background-color:#1a2b4a;-fx-padding:14 24;"
+              alignment="CENTER_LEFT" spacing="16">
+            <Label text="🅿️ SmartPark"
+                   style="-fx-text-fill:white;-fx-font-size:20px;-fx-font-weight:bold;"/>
+            <HBox HBox.hgrow="ALWAYS"/>
+            <Label text="Check In / Out"
+                   style="-fx-text-fill:white;-fx-font-size:14px;-fx-opacity:0.8;"/>
         </HBox>
+    </top>
 
-        <Label fx:id="billLabel"
-               style="-fx-font-size:18px; -fx-font-weight:bold; -fx-text-fill:#1a73e8;"/>
+    <center>
+        <VBox alignment="TOP_CENTER" style="-fx-padding:40 0;">
+            <VBox spacing="16" maxWidth="480" minWidth="420"
+                  style="-fx-background-color:white;-fx-padding:32;
+                         -fx-background-radius:12;
+                         -fx-effect:dropshadow(gaussian,rgba(0,0,0,0.08),12,0,0,4);">
 
-        <Label fx:id="errorLabel" visible="false"
-               style="-fx-text-fill:red; -fx-font-size:13px;"/>
+                <Label text="Check In / Check Out"
+                       style="-fx-font-size:22px;-fx-font-weight:bold;-fx-text-fill:#1a2b4a;"/>
 
-        <Button text="← Back to Dashboard"
-                onAction="#goToDashboard"
-                maxWidth="Infinity"
-                style="-fx-background-color:#eee; -fx-text-fill:#333;
-                       -fx-font-size:14px; -fx-padding:12;"/>
+                <Label fx:id="slotInfoLabel"
+                       style="-fx-font-size:14px;-fx-text-fill:#555;
+                              -fx-background-color:#f0f4ff;-fx-padding:10 14;
+                              -fx-background-radius:8;"/>
 
-    </VBox>
-</AnchorPane>
+                <!-- ERROR -->
+                <Label fx:id="errorLabel" visible="false" wrapText="true" maxWidth="Infinity"
+                       style="-fx-background-color:#ffebee;-fx-text-fill:#c62828;
+                              -fx-padding:10 14;-fx-border-color:#ef9a9a;
+                              -fx-border-radius:8;-fx-background-radius:8;"/>
+
+                <VBox spacing="5">
+                    <Label text="Booking ID"
+                           style="-fx-font-size:13px;-fx-font-weight:bold;-fx-text-fill:#444;"/>
+                    <TextField fx:id="bookingIdField" promptText="Enter booking ID"
+                               style="-fx-padding:11 14;-fx-font-size:14px;
+                                      -fx-border-color:#e0e0e0;-fx-border-width:2;
+                                      -fx-background-radius:8;-fx-border-radius:8;"/>
+                </VBox>
+
+                <Label fx:id="statusLabel"
+                       style="-fx-font-size:15px;-fx-font-weight:bold;"/>
+
+                <HBox spacing="12">
+                    <Button fx:id="checkinBtn" text="✅ Check In"
+                            onAction="#handleCheckin" HBox.hgrow="ALWAYS" maxWidth="Infinity"
+                            style="-fx-background-color:#4caf50;-fx-text-fill:white;
+                                   -fx-font-size:14px;-fx-font-weight:bold;-fx-padding:13;
+                                   -fx-background-radius:8;-fx-cursor:hand;"/>
+                    <Button fx:id="checkoutBtn" text="🚪 Check Out"
+                            onAction="#handleCheckout" HBox.hgrow="ALWAYS" maxWidth="Infinity"
+                            style="-fx-background-color:#e74c3c;-fx-text-fill:white;
+                                   -fx-font-size:14px;-fx-font-weight:bold;-fx-padding:13;
+                                   -fx-background-radius:8;-fx-cursor:hand;"/>
+                </HBox>
+
+                <Label fx:id="billLabel" visible="false"
+                       style="-fx-font-size:18px;-fx-font-weight:bold;-fx-text-fill:#1a2b4a;
+                              -fx-background-color:#e8f5e9;-fx-padding:12 16;-fx-background-radius:8;"/>
+
+                <Button text="← Back to Dashboard" onAction="#goToDashboard" maxWidth="Infinity"
+                        style="-fx-background-color:#f0f2f5;-fx-text-fill:#1a2b4a;
+                               -fx-font-size:14px;-fx-padding:11;-fx-background-radius:8;
+                               -fx-border-color:#ddd;-fx-border-radius:8;-fx-cursor:hand;"/>
+            </VBox>
+        </VBox>
+    </center>
+</BorderPane>
