@@ -1,13 +1,9 @@
 package com.smartpark;
 
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import javafx.stage.Stage;
 
 import java.net.URI;
 import java.net.URL;
@@ -28,9 +24,7 @@ public class LoginController extends BaseController {
 
     @FXML
     private void handleEnterKey(KeyEvent event) {
-        if (event.getCode() == KeyCode.ENTER) {
-            handleLogin();
-        }
+        if (event.getCode() == KeyCode.ENTER) handleLogin();
     }
 
     @FXML
@@ -51,46 +45,29 @@ public class LoginController extends BaseController {
         javafx.concurrent.Task<String> task = new javafx.concurrent.Task<>() {
             @Override
             protected String call() throws Exception {
-                String json = """
-                    {"email":"%s","password":"%s"}
-                    """.formatted(email, password);
-
+                String json = "{\"email\":\"%s\",\"password\":\"%s\"}".formatted(email, password);
                 HttpRequest request = HttpRequest.newBuilder()
                         .uri(URI.create(BASE_URL + "/auth/login"))
                         .header("Content-Type", "application/json")
                         .POST(HttpRequest.BodyPublishers.ofString(json))
                         .build();
-
-                HttpResponse<String> response = httpClient.send(
-                        request, HttpResponse.BodyHandlers.ofString()
-                );
-                return response.body();
+                return httpClient.send(request, HttpResponse.BodyHandlers.ofString()).body();
             }
         };
 
         task.setOnSucceeded(e -> {
             String body = task.getValue();
-
             if (body.contains("\"status\":\"success\"")) {
                 try {
-                    // Parse userId
-                    String userIdStr = body.split("\"userId\":")[1].split("[,}]")[0].trim();
-                    int userId = Integer.parseInt(userIdStr);
-
-                    // Parse username
+                    int userId = Integer.parseInt(body.split("\"userId\":")[1].split("[,}]")[0].trim());
                     String username = body.split("\"username\":\"")[1].split("\"")[0];
-
-                    // Parse role
                     String role = body.split("\"role\":\"")[1].split("\"")[0];
 
-                    // Store in session
                     Session.getInstance().setUserId(userId);
                     Session.getInstance().setUsername(username);
                     Session.getInstance().setRole(role);
 
-                    // Navigate to dashboard
-                    loadPage("/com/smartpark/dashboard.fxml", 900, 600);
-
+                    loadPage("/com/smartpark/dashboard.fxml", 900, 600, loginBtn);
                 } catch (Exception ex) {
                     showError(errorLabel, "Login failed — unexpected response");
                     resetButton();
@@ -114,18 +91,8 @@ public class LoginController extends BaseController {
         loginBtn.setText("Login");
     }
 
-    private void loadPage(String fxmlPath, int width, int height) {
-        try {
-            Parent root = FXMLLoader.load(getClass().getResource(fxmlPath));
-            Stage stage = (Stage) loginBtn.getScene().getWindow();
-            stage.setScene(new Scene(root, width, height));
-        } catch (Exception e) {
-            showError(errorLabel, "Failed to load page");
-        }
-    }
-
     @FXML
     private void goToRegister() {
-        loadPage("/com/smartpark/register.fxml", 800, 600);
+        loadPage("/com/smartpark/register.fxml", 900, 600, loginBtn);
     }
 }

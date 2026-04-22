@@ -1,11 +1,7 @@
 package com.smartpark;
 
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.stage.Stage;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -19,19 +15,15 @@ public class ConfirmationController extends BaseController {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        int bookingId = Session.getInstance().getBookingId();
-        String slotNumber = Session.getInstance().getSelectedSlotNumber();
-        String slotType = Session.getInstance().getSelectedSlotType();
+        int bookingId      = Session.getInstance().getBookingId();
+        String slotNumber  = Session.getInstance().getSelectedSlotNumber();
+        String slotType    = Session.getInstance().getSelectedSlotType();
         String vehiclePlate = Session.getInstance().getVehiclePlate();
 
-        // Calculate rate based on slot type
         double rate = 50.0;
-        if (slotType != null) {
-            switch (slotType.toUpperCase()) {
-                case "BIKE" -> rate = 20.0;
-                case "TRUCK" -> rate = 100.0;
-                default -> rate = 50.0;
-            }
+        if (slotType != null) switch (slotType.toUpperCase()) {
+            case "BIKE"  -> rate = 20.0;
+            case "TRUCK" -> rate = 100.0;
         }
 
         bookingIdLabel.setText("Booking ID: #" + bookingId);
@@ -41,23 +33,6 @@ public class ConfirmationController extends BaseController {
         amountLabel.setText("Rate: ₹" + rate + "/hr (billed on checkout)");
     }
 
-    @FXML
-    private void goToCheckin() {
-        loadPage("/com/smartpark/checkin.fxml", 900, 600);
-    }
-
-    @FXML
-    private void goToDashboard() {
-        loadPage("/com/smartpark/dashboard.fxml", 900, 600);
-    }
-
-    private void loadPage(String fxmlPath, int width, int height) {
-        try {
-            Parent root = FXMLLoader.load(getClass().getResource(fxmlPath));
-            Stage stage = (Stage) checkinBtn.getScene().getWindow();
-            stage.setScene(new Scene(root, width, height));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+    @FXML private void goToCheckin()   { loadPage("/com/smartpark/checkin.fxml",   900, 600, checkinBtn); }
+    @FXML private void goToDashboard() { loadPage("/com/smartpark/dashboard.fxml", 900, 600, checkinBtn); }
 }

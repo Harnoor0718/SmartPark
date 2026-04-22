@@ -2,11 +2,8 @@ package com.smartpark;
 
 import javafx.application.Platform;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.stage.Stage;
+
 import java.net.URI;
 import java.net.URL;
 import java.net.http.*;
@@ -16,7 +13,6 @@ public class RegisterController extends BaseController {
 
     @FXML private TextField nameField;
     @FXML private TextField emailField;
-    @FXML private TextField usernameField;
     @FXML private PasswordField passwordField;
     @FXML private Label errorLabel;
 
@@ -33,17 +29,14 @@ public class RegisterController extends BaseController {
 
         errorLabel.setVisible(false);
 
-        // Validation
         if (name.isEmpty() || email.isEmpty() || password.isEmpty()) {
             showError(errorLabel, "All fields are required");
             return;
         }
-
         if (!email.contains("@")) {
             showError(errorLabel, "Please enter a valid email address");
             return;
         }
-
         if (password.length() < 4) {
             showError(errorLabel, "Password must be at least 4 characters");
             return;
@@ -52,28 +45,21 @@ public class RegisterController extends BaseController {
         javafx.concurrent.Task<String> task = new javafx.concurrent.Task<>() {
             @Override
             protected String call() throws Exception {
-                String json = """
-                    {"username":"%s","email":"%s","password":"%s","role":"customer"}
-                    """.formatted(name, email, password);
-
+                String json = "{\"username\":\"%s\",\"email\":\"%s\",\"password\":\"%s\",\"role\":\"customer\"}"
+                        .formatted(name, email, password);
                 HttpRequest request = HttpRequest.newBuilder()
                         .uri(URI.create(BASE_URL + "/auth/register"))
                         .header("Content-Type", "application/json")
                         .POST(HttpRequest.BodyPublishers.ofString(json))
                         .build();
-
-                HttpResponse<String> response = httpClient.send(
-                        request, HttpResponse.BodyHandlers.ofString()
-                );
-                return response.body();
+                return httpClient.send(request, HttpResponse.BodyHandlers.ofString()).body();
             }
         };
 
         task.setOnSucceeded(e -> Platform.runLater(() -> {
             String body = task.getValue();
             if (body.contains("\"status\":\"success\"")) {
-                // Registration successful — go to login
-                loadPage("/com/smartpark/login.fxml", 800, 600);
+                loadPage("/com/smartpark/login.fxml", 900, 600, nameField);
             } else if (body.contains("already exists")) {
                 showError(errorLabel, "Email already registered. Please login.");
             } else {
@@ -90,16 +76,6 @@ public class RegisterController extends BaseController {
 
     @FXML
     private void goToLogin() {
-        loadPage("/com/smartpark/login.fxml", 800, 600);
-    }
-
-    private void loadPage(String fxmlPath, int width, int height) {
-        try {
-            Parent root = FXMLLoader.load(getClass().getResource(fxmlPath));
-            Stage stage = (Stage) nameField.getScene().getWindow();
-            stage.setScene(new Scene(root, width, height));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        loadPage("/com/smartpark/login.fxml", 900, 600, nameField);
     }
 }
