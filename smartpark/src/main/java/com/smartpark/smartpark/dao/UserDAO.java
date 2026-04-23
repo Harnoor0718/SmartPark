@@ -1,12 +1,13 @@
 package com.smartpark.smartpark.dao;
-
 import com.smartpark.smartpark.models.User;
-import org.mindrot.jbcrypt.BCrypt;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class UserDAO extends BaseDAO {
+
+    private BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     public boolean save(User user) {
         String sql = "INSERT INTO users (username, email, password, role) VALUES (?, ?, ?, ?)";
@@ -14,7 +15,7 @@ public class UserDAO extends BaseDAO {
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, user.getUsername());
             ps.setString(2, user.getEmail());
-            ps.setString(3, BCrypt.hashpw(user.getPassword(), BCrypt.gensalt()));
+            ps.setString(3, user.getPassword()); // already hashed by AuthService
             ps.setString(4, user.getRole());
             return ps.executeUpdate() > 0;
         } catch (SQLException e) {
@@ -24,7 +25,7 @@ public class UserDAO extends BaseDAO {
     }
 
     public User findByEmail(String email) {
-        String sql = "SELECT * FROM users WHERE email = ?";
+        String sql = "SELECT * FROM users WHERE LOWER(email) = LOWER(?)"; // fix case sensitivity
         try (Connection conn = getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, email);
@@ -50,7 +51,7 @@ public class UserDAO extends BaseDAO {
     }
 
     public boolean verifyPassword(String rawPassword, String hashedPassword) {
-        return BCrypt.checkpw(rawPassword, hashedPassword);
+        return passwordEncoder.matches(rawPassword, hashedPassword);
     }
 
     public List<User> findAll() {

@@ -24,7 +24,8 @@ public class CheckinController extends BaseController {
         errorLabel.setVisible(false);
         billLabel.setVisible(false);
         statusLabel.setText("");
-        checkoutBtn.setDisable(true);
+        checkoutBtn.setDisable(false);
+        checkinBtn.setDisable(false);
 
         int bookingId = Session.getInstance().getBookingId();
         if (bookingId > 0) {
@@ -67,13 +68,15 @@ public class CheckinController extends BaseController {
                 checkinBtn.setDisable(true);
             } else {
                 showError(errorLabel, "Check-in failed. Booking may already be active.");
+                checkinBtn.setDisable(false);
             }
             checkinBtn.setText("Check In");
         }));
 
         task.setOnFailed(e -> Platform.runLater(() -> {
             showError(errorLabel, "Cannot connect to server.");
-            checkinBtn.setDisable(false); checkinBtn.setText("Check In");
+            checkinBtn.setDisable(false);
+            checkinBtn.setText("Check In");
         }));
         new Thread(task).start();
     }
@@ -111,19 +114,25 @@ public class CheckinController extends BaseController {
                 statusLabel.setStyle("-fx-text-fill:#1a2b4a;-fx-font-size:16px;-fx-font-weight:bold;");
                 billLabel.setText("Total Bill: ₹" + amount);
                 billLabel.setVisible(true);
-                checkoutBtn.setDisable(true); checkoutBtn.setText("Check Out");
+                checkoutBtn.setDisable(true);
+                checkoutBtn.setText("Check Out");
             } else {
                 showError(errorLabel, "Check-out failed. Please check in first.");
-                checkoutBtn.setDisable(false); checkoutBtn.setText("Check Out");
+                checkoutBtn.setDisable(false);
+                checkoutBtn.setText("Check Out");
             }
         }));
 
         task.setOnFailed(e -> Platform.runLater(() -> {
             showError(errorLabel, "Cannot connect to server.");
-            checkoutBtn.setDisable(false); checkoutBtn.setText("Check Out");
+            checkoutBtn.setDisable(false);
+            checkoutBtn.setText("Check Out");
         }));
         new Thread(task).start();
     }
 
-    @FXML private void goToDashboard() { loadPage("/com/smartpark/dashboard.fxml", 900, 600, checkinBtn); }
+    @FXML
+    private void goToDashboard() {
+        loadPage("/com/smartpark/dashboard.fxml", 900, 600, checkinBtn);
+    }
 }

@@ -1,5 +1,4 @@
 package com.smartpark.smartpark.dao;
-
 import com.smartpark.smartpark.models.ParkingSlot;
 import java.sql.*;
 import java.util.ArrayList;
@@ -20,6 +19,20 @@ public class SlotDAO extends BaseDAO {
             System.out.println("Error saving slot: " + e.getMessage());
             return false;
         }
+    }
+
+    // ADD THIS METHOD
+    public ParkingSlot findById(int id) {
+        String sql = "SELECT * FROM parking_slots WHERE id = ?";
+        try (Connection conn = getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, id);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) return mapRow(rs);
+        } catch (SQLException e) {
+            System.out.println("Error finding slot by id: " + e.getMessage());
+        }
+        return null;
     }
 
     public List<ParkingSlot> findAll() {
@@ -62,16 +75,7 @@ public class SlotDAO extends BaseDAO {
         }
     }
 
-    private ParkingSlot mapRow(ResultSet rs) throws SQLException {
-        ParkingSlot slot = new ParkingSlot();
-        slot.setId(rs.getInt("id"));
-        slot.setSlotNumber(rs.getString("slot_number"));
-        slot.setSlotType(ParkingSlot.SlotType.valueOf(rs.getString("slot_type")));
-        slot.setOccupied(rs.getBoolean("is_occupied"));
-        slot.setLocationId(rs.getInt("location_id"));
-        return slot;
-    }
-
+    // ONLY ONE mapRow — duplicate removed
     private ParkingSlot mapRow(ResultSet rs) throws SQLException {
         ParkingSlot slot = new ParkingSlot();
         slot.setId(rs.getInt("id"));
