@@ -4,6 +4,7 @@ import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 
+import javafx.scene.control.Label;
 import java.net.URI;
 import java.net.URL;
 import java.net.http.*;
@@ -11,13 +12,20 @@ import java.util.ResourceBundle;
 
 public class CheckinController extends BaseController {
 
-    @FXML private TextField bookingIdField;
-    @FXML private Label slotInfoLabel;
-    @FXML private Label statusLabel;
-    @FXML private Button checkinBtn;
-    @FXML private Button checkoutBtn;
-    @FXML private Label errorLabel;
-    @FXML private Label billLabel;
+    @FXML
+    private TextField bookingIdField;
+    @FXML
+    private Label slotInfoLabel;
+    @FXML
+    private Label statusLabel;
+    @FXML
+    private Button checkinBtn;
+    @FXML
+    private Button checkoutBtn;
+    @FXML
+    private Label errorLabel;
+    @FXML
+    private Label billLabel;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -40,10 +48,17 @@ public class CheckinController extends BaseController {
     @FXML
     private void handleCheckin() {
         String text = bookingIdField.getText().trim();
-        if (text.isEmpty()) { showError(errorLabel, "Please enter a booking ID"); return; }
+        if (text.isEmpty()) {
+            showError(errorLabel, "Please enter a booking ID");
+            return;
+        }
         int bookingId;
-        try { bookingId = Integer.parseInt(text); }
-        catch (NumberFormatException e) { showError(errorLabel, "Booking ID must be a number"); return; }
+        try {
+            bookingId = Integer.parseInt(text);
+        } catch (NumberFormatException e) {
+            showError(errorLabel, "Booking ID must be a number");
+            return;
+        }
 
         errorLabel.setVisible(false);
         checkinBtn.setDisable(true);
@@ -84,10 +99,17 @@ public class CheckinController extends BaseController {
     @FXML
     private void handleCheckout() {
         String text = bookingIdField.getText().trim();
-        if (text.isEmpty()) { showError(errorLabel, "Please enter a booking ID"); return; }
+        if (text.isEmpty()) {
+            showError(errorLabel, "Please enter a booking ID");
+            return;
+        }
         int bookingId;
-        try { bookingId = Integer.parseInt(text); }
-        catch (NumberFormatException e) { showError(errorLabel, "Booking ID must be a number"); return; }
+        try {
+            bookingId = Integer.parseInt(text);
+        } catch (NumberFormatException e) {
+            showError(errorLabel, "Booking ID must be a number");
+            return;
+        }
 
         errorLabel.setVisible(false);
         checkoutBtn.setDisable(true);
@@ -108,14 +130,31 @@ public class CheckinController extends BaseController {
             String body = task.getValue();
             if (body.contains("\"status\":\"success\"")) {
                 double amount = 0;
-                try { amount = Double.parseDouble(body.split("\"totalAmount\":")[1].split("[,}]")[0].trim()); }
-                catch (Exception ex) { System.out.println("Could not parse amount"); }
-                statusLabel.setText("✅ Checked Out Successfully!");
+                double hours = 0;
+                try {
+                    amount = Double.parseDouble(body.split("\"totalAmount\":")[1].split("[,}]")[0].trim());
+                } catch (Exception ex) {
+                    System.out.println("Could not parse amount");
+                }
+                try {
+                    hours = Double.parseDouble(body.split("\"hoursParked\":")[1].split("[,}]")[0].trim());
+                } catch (Exception ex) {
+                    System.out.println("Could not parse hours");
+                }
+
+                Session.getInstance().setTotalAmount(amount);
+                Session.getInstance().setHoursParked(hours);
+
+                statusLabel.setText("✅ Checked Out! Redirecting to payment...");
                 statusLabel.setStyle("-fx-text-fill:#1a2b4a;-fx-font-size:16px;-fx-font-weight:bold;");
-                billLabel.setText("Total Bill: ₹" + amount);
-                billLabel.setVisible(true);
                 checkoutBtn.setDisable(true);
                 checkoutBtn.setText("Check Out");
+
+                // Redirect to payment page after short delay
+                javafx.animation.PauseTransition pause = new javafx.animation.PauseTransition(
+                        javafx.util.Duration.seconds(1));
+                pause.setOnFinished(ev -> loadPage("/com/smartpark/payment.fxml", 900, 600, checkinBtn));
+                pause.play();
             } else {
                 showError(errorLabel, "Check-out failed. Please check in first.");
                 checkoutBtn.setDisable(false);

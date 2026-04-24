@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.smartpark.ReceiptController"
+            prefWidth="900" prefHeight="600"
+            style="-fx-background-color:#f0f2f5;">
+
+    <top>
+        <HBox style="-fx-background-color:#1a2b4a;-fx-padding:14 24;"
+              alignment="CENTER_LEFT" spacing="16">
+            <Label text="🅿️ SmartPark"
+                   style="-fx-text-fill:white;-fx-font-size:20px;-fx-font-weight:bold;"/>
+            <HBox HBox.hgrow="ALWAYS"/>
+            <Label text="Payment Receipt"
+                   style="-fx-text-fill:white;-fx-font-size:14px;-fx-opacity:0.8;"/>
+        </HBox>
+    </top>
+
+    <center>
+        <VBox alignment="TOP_CENTER" style="-fx-padding:40 0;">
+            <VBox spacing="16" maxWidth="480" minWidth="420"
+                  style="-fx-background-color:white;-fx-padding:32;
+                         -fx-background-radius:12;
+                         -fx-effect:dropshadow(gaussian,rgba(0,0,0,0.08),12,0,0,4);">
+
+                <VBox alignment="CENTER" spacing="6">
+                    <Label text="✅" style="-fx-font-size:48px;"/>
+                    <Label text="Payment Successful!"
+                           style="-fx-font-size:22px;-fx-font-weight:bold;-fx-text-fill:#1a2b4a;"/>
+                    <Label text="Thank you for using SmartPark"
+                           style="-fx-text-fill:#888;-fx-font-size:13px;"/>
+                </VBox>
+
+                <!-- Receipt Details -->
+                <VBox spacing="10"
+                      style="-fx-background-color:#f8f9fa;-fx-padding:20;
+                             -fx-background-radius:10;-fx-border-color:#e0e0e0;
+                             -fx-border-radius:10;-fx-border-width:1;">
+                    <Label text="Receipt"
+                           style="-fx-font-size:15px;-fx-font-weight:bold;-fx-text-fill:#1a2b4a;"/>
+                    <Label fx:id="receiptIdLabel"
+                           style="-fx-font-size:13px;-fx-text-fill:#555;"/>
+                    <Label fx:id="receiptBookingLabel"
+                           style="-fx-font-size:13px;-fx-text-fill:#555;"/>
+                    <Label fx:id="receiptVehicleLabel"
+                           style="-fx-font-size:13px;-fx-text-fill:#555;"/>
+                    <Label fx:id="receiptHoursLabel"
+                           style="-fx-font-size:13px;-fx-text-fill:#555;"/>
+                    <Label fx:id="receiptMethodLabel"
+                           style="-fx-font-size:13px;-fx-text-fill:#555;"/>
+                    <Label fx:id="receiptAmountLabel"
+                           style="-fx-font-size:20px;-fx-font-weight:bold;-fx-text-fill:#1a2b4a;
+                                  -fx-background-color:#e8f5e9;-fx-padding:10 14;
+                                  -fx-background-radius:6;"/>
+                </VBox>
+
+                <Button text="Back to Dashboard" onAction="#goToDashboard"
+                        maxWidth="Infinity" fx:id="dashBtn"
+                        style="-fx-background-color:#1a2b4a;-fx-text-fill:white;
+                               -fx-font-size:15px;-fx-font-weight:bold;-fx-padding:13;
+                               -fx-background-radius:8;-fx-cursor:hand;"/>
+
+                <Button text="📋 View My Bookings" onAction="#goToHistory"
+                        maxWidth="Infinity"
+                        style="-fx-background-color:#f0f2f5;-fx-text-fill:#1a2b4a;
+                               -fx-font-size:14px;-fx-padding:11;-fx-background-radius:8;
+                               -fx-border-color:#ddd;-fx-border-radius:8;-fx-cursor:hand;"/>
+            </VBox>
+        </VBox>
+    </center>
+</BorderPane>

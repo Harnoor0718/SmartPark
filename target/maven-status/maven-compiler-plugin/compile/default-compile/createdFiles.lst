@@ -23,8 +23,11 @@ com\smartpark\DashboardController.class
 com\smartpark\HistoryController$BookingRow.class
 com\smartpark\BookingController$1.class
 com\smartpark\Refreshable.class
+com\smartpark\PaymentController$1.class
 com\smartpark\RevenueController$1.class
 com\smartpark\BaseController.class
 com\smartpark\HistoryController.class
 com\smartpark\AdminController$1.class
+com\smartpark\PaymentController.class
 com\smartpark\Session.class
+com\smartpark\ReceiptController.class

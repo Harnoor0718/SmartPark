@@ -1,9 +1,7 @@
 package com.smartpark;
 
 public class Session {
-
     private static Session instance;
-
     private String token;
     private String username;
     private String role;
@@ -13,6 +11,10 @@ public class Session {
     private int selectedSlotId;
     private int bookingId;
     private String vehiclePlate;
+    private double totalAmount;
+    private double hoursParked;
+    private int paymentId;
+    private String paymentMethod;
 
     private Session() {}
 
@@ -23,13 +25,10 @@ public class Session {
 
     public String getToken() { return token; }
     public void setToken(String token) { this.token = token; }
-
     public String getUsername() { return username; }
     public void setUsername(String username) { this.username = username; }
-
     public String getRole() { return role; }
     public void setRole(String role) { this.role = role; }
-
     public int getUserId() { return userId; }
     public void setUserId(int userId) { this.userId = userId; }
 
@@ -37,32 +36,33 @@ public class Session {
         this.selectedSlotNumber = number;
         this.selectedSlotType = type;
     }
-
     public void setSelectedSlot(String number, String type, int id) {
         this.selectedSlotNumber = number;
         this.selectedSlotType = type;
         this.selectedSlotId = id;
     }
-
     public String getSelectedSlotNumber() { return selectedSlotNumber; }
     public String getSelectedSlotType() { return selectedSlotType; }
     public int getSelectedSlotId() { return selectedSlotId; }
 
     public int getBookingId() { return bookingId; }
     public void setBookingId(int bookingId) { this.bookingId = bookingId; }
-
     public String getVehiclePlate() { return vehiclePlate; }
     public void setVehiclePlate(String vehiclePlate) { this.vehiclePlate = vehiclePlate; }
 
+    public double getTotalAmount() { return totalAmount; }
+    public void setTotalAmount(double totalAmount) { this.totalAmount = totalAmount; }
+    public double getHoursParked() { return hoursParked; }
+    public void setHoursParked(double hoursParked) { this.hoursParked = hoursParked; }
+    public int getPaymentId() { return paymentId; }
+    public void setPaymentId(int paymentId) { this.paymentId = paymentId; }
+    public String getPaymentMethod() { return paymentMethod; }
+    public void setPaymentMethod(String paymentMethod) { this.paymentMethod = paymentMethod; }
+
     public void clear() {
-        token = null;
-        username = null;
-        role = null;
-        userId = 0;
-        selectedSlotNumber = null;
-        selectedSlotType = null;
-        selectedSlotId = 0;
-        bookingId = 0;
-        vehiclePlate = null;
+        token = null; username = null; role = null; userId = 0;
+        selectedSlotNumber = null; selectedSlotType = null; selectedSlotId = 0;
+        bookingId = 0; vehiclePlate = null;
+        totalAmount = 0; hoursParked = 0; paymentId = 0; paymentMethod = null;
     }
 }
