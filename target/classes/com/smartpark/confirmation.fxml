@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.image.*?>
 
 <BorderPane xmlns:fx="http://javafx.com/fxml"
             fx:controller="com.smartpark.ConfirmationController"
@@ -20,49 +21,84 @@
     </top>
 
     <center>
-        <VBox alignment="TOP_CENTER" style="-fx-padding:40 0;">
-            <VBox spacing="16" maxWidth="480" minWidth="420"
-                  style="-fx-background-color:white;-fx-padding:32;
-                         -fx-background-radius:12;
-                         -fx-effect:dropshadow(gaussian,rgba(0,0,0,0.08),12,0,0,4);">
+        <ScrollPane fitToWidth="true"
+                    style="-fx-background-color:#f0f2f5;-fx-background:transparent;">
+            <VBox alignment="TOP_CENTER" style="-fx-padding:40 0;">
+                <HBox spacing="20" alignment="TOP_CENTER" maxWidth="860">
 
-                <VBox alignment="CENTER" spacing="6">
-                    <Label text="✅"
-                           style="-fx-font-size:40px;"/>
-                    <Label text="Booking Confirmed!"
-                           style="-fx-font-size:22px;-fx-font-weight:bold;-fx-text-fill:#1a2b4a;"/>
-                    <Label text="Your parking slot has been reserved"
-                           style="-fx-text-fill:#888;-fx-font-size:13px;"/>
-                </VBox>
+                    <!-- LEFT: Booking Details -->
+                    <VBox spacing="16" HBox.hgrow="ALWAYS"
+                          style="-fx-background-color:white;-fx-padding:32;
+                                 -fx-background-radius:12;
+                                 -fx-effect:dropshadow(gaussian,rgba(0,0,0,0.08),12,0,0,4);">
 
-                <!-- Details card -->
-                <VBox spacing="12"
-                      style="-fx-background-color:#f8f9fa;-fx-padding:20;
-                             -fx-background-radius:10;-fx-border-color:#e0e0e0;
-                             -fx-border-radius:10;-fx-border-width:1;">
-                    <Label fx:id="bookingIdLabel"
-                           style="-fx-font-size:15px;-fx-font-weight:bold;-fx-text-fill:#1a2b4a;"/>
-                    <Label fx:id="slotLabel"
-                           style="-fx-font-size:14px;-fx-text-fill:#444;"/>
-                    <Label fx:id="vehicleLabel"
-                           style="-fx-font-size:14px;-fx-text-fill:#444;"/>
-                    <Label fx:id="amountLabel"
-                           style="-fx-font-size:15px;-fx-font-weight:bold;-fx-text-fill:#1a2b4a;
-                                  -fx-background-color:#e8f5e9;-fx-padding:8 12;
-                                  -fx-background-radius:6;"/>
-                </VBox>
+                        <VBox alignment="CENTER" spacing="6">
+                            <Label text="✅"
+                                   style="-fx-font-size:40px;"/>
+                            <Label text="Booking Confirmed!"
+                                   style="-fx-font-size:22px;-fx-font-weight:bold;-fx-text-fill:#1a2b4a;"/>
+                            <Label text="Your parking slot has been reserved"
+                                   style="-fx-text-fill:#888;-fx-font-size:13px;"/>
+                        </VBox>
 
-                <Button fx:id="checkinBtn" text="Proceed to Check-In →"
-                        onAction="#goToCheckin" maxWidth="Infinity"
-                        style="-fx-background-color:#1a2b4a;-fx-text-fill:white;
-                               -fx-font-size:15px;-fx-font-weight:bold;-fx-padding:13;
-                               -fx-background-radius:8;-fx-cursor:hand;"/>
+                        <!-- Details card -->
+                        <VBox spacing="12"
+                              style="-fx-background-color:#f8f9fa;-fx-padding:20;
+                                     -fx-background-radius:10;-fx-border-color:#e0e0e0;
+                                     -fx-border-radius:10;-fx-border-width:1;">
+                            <Label fx:id="bookingIdLabel"
+                                   style="-fx-font-size:15px;-fx-font-weight:bold;-fx-text-fill:#1a2b4a;"/>
+                            <Label fx:id="slotLabel"
+                                   style="-fx-font-size:14px;-fx-text-fill:#444;"/>
+                            <Label fx:id="vehicleLabel"
+                                   style="-fx-font-size:14px;-fx-text-fill:#444;"/>
+                            <Label fx:id="amountLabel"
+                                   style="-fx-font-size:15px;-fx-font-weight:bold;-fx-text-fill:#1a2b4a;
+                                          -fx-background-color:#e8f5e9;-fx-padding:8 12;
+                                          -fx-background-radius:6;"/>
+                        </VBox>
 
-                <Button text="Back to Dashboard" onAction="#goToDashboard" maxWidth="Infinity"
-                        style="-fx-background-color:#f0f2f5;-fx-text-fill:#1a2b4a;
-                               -fx-font-size:14px;-fx-padding:11;-fx-background-radius:8;
-                               -fx-border-color:#ddd;-fx-border-radius:8;-fx-cursor:hand;"/>
+                        <Button fx:id="checkinBtn" text="Proceed to Check-In →"
+                                onAction="#goToCheckin" maxWidth="Infinity"
+                                style="-fx-background-color:#1a2b4a;-fx-text-fill:white;
+                                       -fx-font-size:15px;-fx-font-weight:bold;-fx-padding:13;
+                                       -fx-background-radius:8;-fx-cursor:hand;"/>
+
+                        <Button text="Back to Dashboard" onAction="#goToDashboard"
+                                maxWidth="Infinity"
+                                style="-fx-background-color:#f0f2f5;-fx-text-fill:#1a2b4a;
+                                       -fx-font-size:14px;-fx-padding:11;-fx-background-radius:8;
+                                       -fx-border-color:#ddd;-fx-border-radius:8;-fx-cursor:hand;"/>
+                    </VBox>
+
+                    <!-- RIGHT: QR Code -->
+                    <VBox spacing="12" alignment="CENTER"
+                          style="-fx-background-color:white;-fx-padding:32;
+                                 -fx-background-radius:12;
+                                 -fx-effect:dropshadow(gaussian,rgba(0,0,0,0.08),12,0,0,4);"
+                          minWidth="220" maxWidth="240">
+
+                        <Label text="Your QR Code"
+                               style="-fx-font-size:16px;-fx-font-weight:bold;-fx-text-fill:#1a2b4a;"/>
+
+                        <ImageView fx:id="qrImageView"
+                                   fitWidth="180" fitHeight="180"
+                                   preserveRatio="true"
+                                   style="-fx-border-color:#e0e0e0;-fx-border-width:1;
+                                          -fx-border-radius:8;"/>
+
+                        <Label fx:id="qrStatusLabel"
+                               text="Generating QR code..."
+                               wrapText="true"
+                               style="-fx-text-fill:#888;-fx-font-size:12px;"
+                               alignment="CENTER"/>
+
+                        <Label text="Show this at the entry gate"
+                               style="-fx-text-fill:#aaa;-fx-font-size:11px;"/>
+                    </VBox>
+
+                </HBox>
             </VBox>
-        </VBox>
+        </ScrollPane>
     </center>
 </BorderPane>

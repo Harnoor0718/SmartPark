@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.smartpark.HistoryController"
+            prefWidth="900" prefHeight="600"
+            style="-fx-background-color:#f0f2f5;">
+
+    <!-- NAVBAR -->
+    <top>
+        <HBox style="-fx-background-color:#1a2b4a;-fx-padding:14 24;"
+              alignment="CENTER_LEFT" spacing="16">
+            <Label text="🅿️ SmartPark"
+                   style="-fx-text-fill:white;-fx-font-size:20px;-fx-font-weight:bold;"/>
+            <HBox HBox.hgrow="ALWAYS"/>
+            <Label text="My Booking History"
+                   style="-fx-text-fill:white;-fx-font-size:14px;-fx-opacity:0.8;"/>
+            <Button fx:id="backBtn" text="← Dashboard" onAction="#goToDashboard"
+                    style="-fx-background-color:#e74c3c;-fx-text-fill:white;
+                           -fx-font-weight:bold;-fx-background-radius:6;
+                           -fx-padding:8 18;-fx-cursor:hand;"/>
+        </HBox>
+    </top>
+
+    <center>
+        <VBox spacing="16" style="-fx-padding:20;">
+
+            <!-- Stats Row -->
+            <HBox spacing="16">
+                <VBox alignment="CENTER" spacing="6" HBox.hgrow="ALWAYS"
+                      style="-fx-background-color:white;-fx-padding:16;-fx-background-radius:10;
+                             -fx-effect:dropshadow(gaussian,rgba(0,0,0,0.06),8,0,0,2);">
+                    <Label fx:id="totalLabel" text="Total Bookings: ..."
+                           style="-fx-font-size:16px;-fx-font-weight:bold;-fx-text-fill:#1a2b4a;"/>
+                </VBox>
+                <VBox alignment="CENTER" spacing="6" HBox.hgrow="ALWAYS"
+                      style="-fx-background-color:white;-fx-padding:16;-fx-background-radius:10;
+                             -fx-effect:dropshadow(gaussian,rgba(0,0,0,0.06),8,0,0,2);">
+                    <Label fx:id="revenueLabel" text="Total Spent: ..."
+                           style="-fx-font-size:16px;-fx-font-weight:bold;-fx-text-fill:#4caf50;"/>
+                </VBox>
+            </HBox>
+
+            <!-- Search Bar -->
+            <VBox spacing="8"
+                  style="-fx-background-color:white;-fx-padding:16;-fx-background-radius:10;
+                         -fx-effect:dropshadow(gaussian,rgba(0,0,0,0.06),8,0,0,2);">
+                <Label text="Search Bookings"
+                       style="-fx-font-size:15px;-fx-font-weight:bold;-fx-text-fill:#1a2b4a;"/>
+                <HBox spacing="10" alignment="CENTER_LEFT">
+                    <TextField fx:id="searchField"
+                               promptText="Search by plate number, status or booking ID..."
+                               HBox.hgrow="ALWAYS"
+                               style="-fx-padding:10 14;-fx-font-size:14px;
+                                      -fx-border-color:#e0e0e0;-fx-border-width:2;
+                                      -fx-background-radius:8;-fx-border-radius:8;"/>
+                    <Button text="🔍 Search" onAction="#handleSearch"
+                            style="-fx-background-color:#1a2b4a;-fx-text-fill:white;
+                                   -fx-font-weight:bold;-fx-padding:10 20;
+                                   -fx-background-radius:8;-fx-cursor:hand;"/>
+                    <Button text="Clear" onAction="#handleClear"
+                            style="-fx-background-color:#f0f2f5;-fx-text-fill:#1a2b4a;
+                                   -fx-padding:10 16;-fx-background-radius:8;
+                                   -fx-border-color:#ddd;-fx-border-radius:8;-fx-cursor:hand;"/>
+                </HBox>
+            </VBox>
+
+            <!-- Table -->
+            <VBox spacing="8" VBox.vgrow="ALWAYS"
+                  style="-fx-background-color:white;-fx-padding:20;-fx-background-radius:10;
+                         -fx-effect:dropshadow(gaussian,rgba(0,0,0,0.06),8,0,0,2);">
+                <Label text="Booking History"
+                       style="-fx-font-size:15px;-fx-font-weight:bold;-fx-text-fill:#1a2b4a;"/>
+
+                <!-- Legend -->
+                <HBox spacing="20">
+                    <HBox spacing="6" alignment="CENTER_LEFT">
+                        <Label text="■" style="-fx-text-fill:#4caf50;"/>
+                        <Label text="Completed" style="-fx-font-size:12px;-fx-text-fill:#555;"/>
+                    </HBox>
+                    <HBox spacing="6" alignment="CENTER_LEFT">
+                        <Label text="■" style="-fx-text-fill:#2196f3;"/>
+                        <Label text="Active" style="-fx-font-size:12px;-fx-text-fill:#555;"/>
+                    </HBox>
+                    <HBox spacing="6" alignment="CENTER_LEFT">
+                        <Label text="■" style="-fx-text-fill:#e74c3c;"/>
+                        <Label text="Cancelled" style="-fx-font-size:12px;-fx-text-fill:#555;"/>
+                    </HBox>
+                    <HBox spacing="6" alignment="CENTER_LEFT">
+                        <Label text="■" style="-fx-text-fill:#f39c12;"/>
+                        <Label text="Pending" style="-fx-font-size:12px;-fx-text-fill:#555;"/>
+                    </HBox>
+                </HBox>
+
+                <TableView fx:id="historyTable" VBox.vgrow="ALWAYS">
+                    <columns>
+                        <TableColumn fx:id="colId"       text="Booking ID" prefWidth="90"/>
+                        <TableColumn fx:id="colSlot"     text="Slot"       prefWidth="80"/>
+                        <TableColumn fx:id="colPlate"    text="Vehicle Plate" prefWidth="140"/>
+                        <TableColumn fx:id="colStatus"   text="Status"     prefWidth="100"/>
+                        <TableColumn fx:id="colAmount"   text="Amount"     prefWidth="90"/>
+                        <TableColumn fx:id="colCheckIn"  text="Check In"   prefWidth="160"/>
+                        <TableColumn fx:id="colCheckOut" text="Check Out"  prefWidth="160"/>
+                    </columns>
+                </TableView>
+            </VBox>
+        </VBox>
+    </center>
+</BorderPane>

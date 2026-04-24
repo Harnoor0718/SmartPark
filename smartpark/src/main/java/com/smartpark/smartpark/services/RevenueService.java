@@ -100,4 +100,26 @@ public class RevenueService {
         }
         return summary;
     }
+    // Get peak hours
+public List<Map<String, Object>> getPeakHours() {
+    List<Map<String, Object>> result = new ArrayList<>();
+    String sql = "SELECT HOUR(check_in_time) as hour, COUNT(*) as bookings " +
+                 "FROM bookings WHERE check_in_time IS NOT NULL " +
+                 "GROUP BY HOUR(check_in_time) ORDER BY hour ASC";
+    try {
+        Connection conn = DBConnection.getConnection();
+        PreparedStatement ps = conn.prepareStatement(sql);
+        ResultSet rs = ps.executeQuery();
+        while (rs.next()) {
+            Map<String, Object> row = new HashMap<>();
+            int hour = rs.getInt("hour");
+            row.put("hour", String.format("%02d:00", hour));
+            row.put("bookings", rs.getInt("bookings"));
+            result.add(row);
+        }
+    } catch (SQLException e) {
+        System.out.println("Error getting peak hours: " + e.getMessage());
+    }
+    return result;
+}
 }

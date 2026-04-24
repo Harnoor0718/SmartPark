@@ -14,8 +14,10 @@ public class RevenueController extends BaseController {
 
     @FXML private BarChart<String, Number> revenueChart;
     @FXML private LineChart<String, Number> occupancyChart;
+    @FXML private BarChart<String, Number> peakHoursChart;
     @FXML private Label totalRevenueLabel;
     @FXML private Label totalBookingsLabel;
+    @FXML private Label peakHourLabel;
     @FXML private Button backBtn;
 
     @Override
@@ -23,30 +25,38 @@ public class RevenueController extends BaseController {
         loadSummary();
         loadDailyRevenue();
         loadOccupancyData();
+        loadPeakHours();
     }
 
     private void loadSummary() {
         javafx.concurrent.Task<String> task = new javafx.concurrent.Task<>() {
             @Override protected String call() throws Exception {
-                HttpRequest r = HttpRequest.newBuilder().uri(URI.create(BASE_URL + "/reports/summary")).GET().build();
+                HttpRequest r = HttpRequest.newBuilder()
+                        .uri(URI.create(BASE_URL + "/reports/summary")).GET().build();
                 return httpClient.send(r, HttpResponse.BodyHandlers.ofString()).body();
             }
         };
         task.setOnSucceeded(e -> Platform.runLater(() -> {
             String b = task.getValue();
             try {
-                totalRevenueLabel.setText("Total Revenue: ₹" + b.split("\"totalRevenue\":")[1].split("[,}]")[0].trim());
-                totalBookingsLabel.setText("Total Bookings: " + b.split("\"totalBookings\":")[1].split("[,}]")[0].trim());
-            } catch (Exception ex) { totalRevenueLabel.setText("Total Revenue: N/A"); totalBookingsLabel.setText("Total Bookings: N/A"); }
+                String revenue = b.split("\"totalRevenue\":")[1].split("[,}]")[0].trim();
+                String bookings = b.split("\"totalBookings\":")[1].split("[,}]")[0].trim();
+                totalRevenueLabel.setText("₹" + revenue);
+                totalBookingsLabel.setText(bookings);
+            } catch (Exception ex) {
+                totalRevenueLabel.setText("N/A");
+                totalBookingsLabel.setText("N/A");
+            }
         }));
-        task.setOnFailed(e -> Platform.runLater(() -> totalRevenueLabel.setText("Cannot connect to server")));
+        task.setOnFailed(e -> Platform.runLater(() -> totalRevenueLabel.setText("Cannot connect")));
         new Thread(task).start();
     }
 
     private void loadDailyRevenue() {
         javafx.concurrent.Task<String> task = new javafx.concurrent.Task<>() {
             @Override protected String call() throws Exception {
-                HttpRequest r = HttpRequest.newBuilder().uri(URI.create(BASE_URL + "/reports/revenue?period=daily")).GET().build();
+                HttpRequest r = HttpRequest.newBuilder()
+                        .uri(URI.create(BASE_URL + "/reports/revenue?period=daily")).GET().build();
                 return httpClient.send(r, HttpResponse.BodyHandlers.ofString()).body();
             }
         };
@@ -73,7 +83,8 @@ public class RevenueController extends BaseController {
     private void loadOccupancyData() {
         javafx.concurrent.Task<String> task = new javafx.concurrent.Task<>() {
             @Override protected String call() throws Exception {
-                HttpRequest r = HttpRequest.newBuilder().uri(URI.create(BASE_URL + "/admin/stats")).GET().build();
+                HttpRequest r = HttpRequest.newBuilder()
+                        .uri(URI.create(BASE_URL + "/admin/stats")).GET().build();
                 return httpClient.send(r, HttpResponse.BodyHandlers.ofString()).body();
             }
         };
@@ -88,7 +99,51 @@ public class RevenueController extends BaseController {
             occupancyChart.getData().add(series);
             occupancyChart.setTitle("Current Occupancy %");
         }));
-        task.setOnFailed(e -> System.out.println("Failed to load occupancy data"));
+        task.setOnFailed(e -> System.out.println("Failed to load occupancy"));
+        new Thread(task).start();
+    }
+
+    private void loadPeakHours() {
+        javafx.concurrent.Task<String> task = new javafx.concurrent.Task<>() {
+            @Override protected String call() throws Exception {
+                HttpRequest r = HttpRequest.newBuilder()
+                        .uri(URI.create(BASE_URL + "/reports/peak-hours")).GET().build();
+                return httpClient.send(r, HttpResponse.BodyHandlers.ofString()).body();
+            }
+        };
+        task.setOnSucceeded(e -> Platform.runLater(() -> {
+            peakHoursChart.getData().clear();
+            XYChart.Series<String, Number> series = new XYChart.Series<>();
+            series.setName("Bookings per Hour");
+
+            String peakHour = "";
+            int peakCount = 0;
+
+            try {
+                for (String part : task.getValue().split("\\{")) {
+                    if (!part.contains("hour")) continue;
+                    String hour = part.split("\"hour\":\"")[1].split("\"")[0];
+                    int bookings = Integer.parseInt(part.split("\"bookings\":")[1].split("[,}]")[0].trim());
+                    series.getData().add(new XYChart.Data<>(hour, bookings));
+
+                    if (bookings > peakCount) {
+                        peakCount = bookings;
+                        peakHour = hour;
+                    }
+                }
+            } catch (Exception ex) { System.out.println("Error parsing peak hours: " + ex.getMessage()); }
+
+            if (series.getData().isEmpty()) {
+                series.getData().add(new XYChart.Data<>("No data", 0));
+                peakHourLabel.setText("No check-in data yet");
+            } else {
+                peakHourLabel.setText("🔥 Busiest hour: " + peakHour + " (" + peakCount + " bookings)");
+            }
+
+            peakHoursChart.getData().add(series);
+            peakHoursChart.setTitle("Peak Hours");
+        }));
+        task.setOnFailed(e -> System.out.println("Failed to load peak hours"));
         new Thread(task).start();
     }
 

@@ -62,4 +62,13 @@ public class RevenueController {
         response.put("occupiedSlots", lot.getOccupiedSlots());
         return response;
     }
+
+    // GET /api/reports/peak-hours
+    @GetMapping("/peak-hours")
+    public Map<String, Object> getPeakHours() {
+        Map<String, Object> response = new HashMap<>();
+        response.put("status", "success");
+        response.put("data", revenueService.getPeakHours());
+        return response;
+    }
 }

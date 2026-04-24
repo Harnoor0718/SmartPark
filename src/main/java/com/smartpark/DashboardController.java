@@ -12,7 +12,6 @@ import java.net.URI;
 import java.net.URL;
 import java.net.http.*;
 import java.util.ResourceBundle;
-
 public class DashboardController extends BaseController implements Refreshable {
 
     @FXML private Label navUsername;
@@ -109,6 +108,7 @@ public class DashboardController extends BaseController implements Refreshable {
     }
 
     @FXML private void goToCheckIn() { stopAutoRefresh(); loadPage("/com/smartpark/checkin.fxml", 900, 600, slotGrid); }
+    @FXML private void goToHistory() { stopAutoRefresh(); loadPage("/com/smartpark/history.fxml", 900, 600, slotGrid); }
     @FXML private void goToAdmin()   { stopAutoRefresh(); loadPage("/com/smartpark/admin.fxml",   900, 600, slotGrid); }
 
     @FXML
